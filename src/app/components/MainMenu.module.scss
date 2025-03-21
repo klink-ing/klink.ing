@@ -1,0 +1,38 @@
+@import 'src/styles/vars.scss';
+
+.menu {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: calc(var(--v-space) * 1);
+  padding-bottom: calc(var(--v-space) * 0.2);
+  padding-left: calc(var(--v-space) * 0.5);
+  padding-right: calc(var(--v-space) * 0.5);
+  & > * {
+    align-self: baseline;
+  }
+  & .logo {
+    width: 50%;
+    max-width: 180px;
+    svg {
+        margin-bottom: -12.2%;
+        margin-top: -4.75%;
+    }
+  }
+  & > *:not(:first-child) {
+    text-transform: uppercase;
+    display: inline-block;
+    --font-name: #{$fontRegular};
+    font-weight: #{$fontWeightHeavy};
+    letter-spacing: 0.1em;
+    :any-link {
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

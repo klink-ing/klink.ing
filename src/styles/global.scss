@@ -1,0 +1,20 @@
+@import './vars.scss';
+
+body {
+  font-family: $fontRegular;
+  font-size: var(--font-body-size);
+  line-height: var(--font-base-line-height);
+  -webkit-font-smoothing: antialiased;
+  background: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}

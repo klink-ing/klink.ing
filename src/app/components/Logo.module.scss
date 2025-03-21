@@ -1,0 +1,11 @@
+.logo {
+    display: block;
+    margin: 0;
+  :global(.cls-1) {
+    fill: var(--color-accent);
+  }
+  :global(.cls-2) {
+    fill: var(--color-text);
+    display: none;
+  }
+}

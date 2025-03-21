@@ -1,0 +1,222 @@
+@import 'src/styles/vars.scss';
+
+.resumePage {
+  --max-width: 800px;
+}
+
+.resume {
+  background-color: white;
+  --resume-h-padding: calc(var(--v-space) * 1);
+  --resume-t-padding: 60px;
+  --resume-b-padding: 60px;
+
+  --h1-size: calc(var(--font-body-size) * 1.0);
+  --h2-size: calc(var(--font-body-size) * 2);
+  --h3-size: calc(var(--font-body-size) * 1.5);
+  --h4-size: calc(var(--font-body-size) * 1.1);
+  --small-size: calc(var(--font-body-size) * 0.8);
+
+  @media (width >= 375px) {
+    --h2-size: calc(var(--font-body-size) * 2.5);
+    --h3-size: calc(var(--font-body-size) * 1.7);
+  }
+
+  @media (width >= 600px) {
+    --h2-size: calc(var(--font-body-size) * 3);
+    --h3-size: calc(var(--font-body-size) * 1.8);
+  }
+
+
+  --indent: calc(var(--v-space) * 1.5);
+
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--resume-h-padding);
+  padding-right: var(--resume-h-padding);
+  padding-top: var(--resume-t-padding);
+  padding-bottom: var(--resume-b-padding);
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  section > ul > li {
+    margin-top: calc(var(--v-space) * 3);
+  }
+  section > ul > li:first-child {
+    margin-top: calc(var(--v-space) * 1);
+  }
+
+  header {
+    text-align: right;
+    text-align: end;
+    margin-bottom: calc(var(--v-space) * 2);
+  }
+
+  section {
+    margin-bottom: calc(var(--v-space) * 4);
+  }
+
+
+
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.1em;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: var(--h1-size);
+    text-transform: uppercase;
+    font-weight: 900;
+  }
+  h2 {
+    font-size: var(--h2-size);
+    color: var(--color-accent);
+    text-transform: uppercase;
+    font-weight: $fontWeightLight;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5em;
+    margin-left: -0.12em;
+  }
+  h3 {
+    font-size: var(--h3-size);
+    font-family: $fontCondensed;
+    font-weight: $fontWeightHeavy;
+    margin: 0;
+  }
+  // --font-name: #{$fontCondensed};
+  // --font-body-size: 4px;
+
+  h4 {
+    font-family: $fontCondensed;
+    font-size: var(--h4-size);
+    font-weight: 700;
+  }
+
+  @media(width >= 375px) {
+    --resume-h-padding: calc(var(--v-space) * 2);
+  }
+  @media(width >= 600px) {
+    --resume-h-padding: calc(var(--v-space) * 4);
+
+    .topLine {
+      margin-top: var(--v-space);
+      &:not(:first-of-type) {
+        margin-top: calc(var(--v-space) * 4);
+      }
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+  }
+
+  .bulletList {
+    margin-top: var(--v-space);
+    & > li {
+      position: relative;
+      margin: 0;
+      padding: 0;
+      padding-left: calc(var(--indent) * 0.5);
+      &:not(:last-child) {
+        margin-bottom: var(--v-space);
+      }
+      &::before {
+        position: absolute;
+        top: 0.4em;
+        bottom: 0.1em;
+        left: 0;
+        border-left: 1px solid var(--color-accent-lighter);
+        display: block;
+        content: '';
+        pointer-events: none;
+      }
+    }
+  }
+
+  ul.compactList {
+    & > li {
+      --line-height: 1.7em;
+      --color-link: var(--color-accent-darker);
+      // color: var(--color-accent);
+      display: inline-block;
+      margin-right: 0.2em;
+      // background-color: var(--color-fill);
+      font-family: $fontCondensed;
+      font-weight: 300;
+      font-size: var(--small-size);
+      height: var(--line-height);
+      line-height: calc(var(--line-height) * 1);
+      padding-right: 1em;
+      padding-left: 1em;
+      // border: 1px solid var(--color-accent);
+      border-radius: 100px;
+      background-color: var(--color-accent-lightest);
+      // &:not(:last-child)::after {
+      //   content: ',';
+      // }
+    }
+  }
+
+  .capabilities {
+    h4 {
+      display: inline;
+      &:after {
+        content: ': ';
+      }
+    }
+  }
+
+  .organization {
+    // font-style: italic;
+    font-weight: 600;
+    display: inline;
+  }
+  .location,
+  .schoolLocation {
+    display: inline;
+    &:before {
+      content: ' – ';
+    }
+    color: var(--color-text-lighter);
+    font-size: 0.85em;
+  }
+
+  .bullets {
+    text-decoration: none;
+  }
+  .dates {
+    text-decoration: none;
+    white-space: nowrap;
+    @media(width >= 600px) {
+      padding-left: 1em;
+    }
+  }
+  .block {
+    text-decoration: none;
+  }
+  .education {
+    text-decoration: none;
+  }
+  .school {
+    text-decoration: none;
+  }
+  .location {
+    text-decoration: none;
+  }
+  .schoolLocation {
+    text-decoration: none;
+  }
+}

@@ -1,0 +1,52 @@
+@import 'src/styles/vars.scss';
+
+.splash {
+  display: table;
+  padding: 30px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100vh;
+  & .splashInner {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+  }
+  & .logo {
+    width: 100%;
+  }
+
+  nav ul {
+    --font-name: #{$fontRegular};
+    margin: 0;
+    padding: 0;
+    margin-top: 3em;
+    list-style: none;
+    text-transform: uppercase;
+    display: inline-block;
+    font-weight: #{$fontWeightHeavy};
+    letter-spacing: 0.1em;
+    :any-link {
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    &::before,
+    &::after {
+      content: ' ';
+      display: block;
+      margin-left: 1em;
+      margin-right: 1em;
+      height: 0;
+      border-top: 1px solid var(--color-text);
+    }
+    &::before {
+      margin-bottom: 0.1em + 0.44em;
+    }
+    &::after {
+      margin-top: 0.31em + 0.44em;
+    }
+  }
+}
