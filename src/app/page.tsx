@@ -1,5 +1,6 @@
 import styles from "./index.module.scss";
 import Logo from "./components/Logo";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -9,7 +10,7 @@ export default function Home() {
         <nav>
           <ul>
             <li>
-              <a href="/resume">Resumé</a>
+              <Link href="/resume">Resumé</Link>
             </li>
           </ul>
         </nav>

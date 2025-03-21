@@ -1,9 +1,7 @@
-import * as React from 'react';
-import  Link  from 'next/link';
+import * as React from "react";
 
-import * as styles from './resume.module.scss';
-import MainMenu from '../components/MainMenu';
-import { Metadata } from 'next/types';
+import { Metadata } from "next/types";
+import styles from "./resume.module.scss";
 
 const Capabilities = () => (
   <ul className={styles.bulletList}>
@@ -48,17 +46,18 @@ const Capabilities = () => (
 );
 
 const Stint: React.FunctionComponent<{
-  title:string
-  start?:string
-  end?:string
-  location:string
-  organization:string
-  url?:string
+  title: React.ReactNode;
+  start?: string;
+  end?: string;
+  location: string;
+  organization: string;
+  url?: string;
+  children?: React.ReactNode;
 }> = ({ title, start, end, location, organization, url, children }) => (
   <>
     <div className={styles.topLine}>
       <h3 className={styles.jobTitle}>{title}</h3>
-      <div style={{ whiteSpace: 'nowrap' }} className={styles.dates}>
+      <div style={{ whiteSpace: "nowrap" }} className={styles.dates}>
         {start}
         {start && end && <> – </>}
         {end}
@@ -167,7 +166,8 @@ const Resume = () => (
               <li>
                 Designed and developed promotional websites for clients, meeting
                 the needs of accessibility, fast loading times and
-                maintainability, while maintaining all web services for the agency.
+                maintainability, while maintaining all web services for the
+                agency.
               </li>
               <li>
                 Created HTML/JS-based banner ads with a focus on providing rich
@@ -244,8 +244,8 @@ const Resume = () => (
           <Stint
             title={
               <>
-                Associate of Applied Science in{' '}
-                <span style={{ whiteSpace: 'nowrap' }}>Graphic Design</span>
+                Associate of Applied Science in{" "}
+                <span style={{ whiteSpace: "nowrap" }}>Graphic Design</span>
               </>
             }
             organization="Seattle Central Creative Academy"
@@ -258,8 +258,8 @@ const Resume = () => (
           <Stint
             title={
               <>
-                Bachelor of Science in{' '}
-                <span style={{ whiteSpace: 'nowrap' }}>Computer Science</span>
+                Bachelor of Science in{" "}
+                <span style={{ whiteSpace: "nowrap" }}>Computer Science</span>
               </>
             }
             organization="Western Washington University"

@@ -1,4 +1,4 @@
-@import 'src/styles/vars.scss';
+@import "src/styles/vars.scss";
 
 .resumePage {
   --max-width: 800px;
@@ -10,22 +10,11 @@
   --resume-t-padding: 60px;
   --resume-b-padding: 60px;
 
-  --h1-size: calc(var(--font-body-size) * 1.0);
+  --h1-size: calc(var(--font-body-size) * 1);
   --h2-size: calc(var(--font-body-size) * 2);
   --h3-size: calc(var(--font-body-size) * 1.5);
   --h4-size: calc(var(--font-body-size) * 1.1);
   --small-size: calc(var(--font-body-size) * 0.8);
-
-  @media (width >= 375px) {
-    --h2-size: calc(var(--font-body-size) * 2.5);
-    --h3-size: calc(var(--font-body-size) * 1.7);
-  }
-
-  @media (width >= 600px) {
-    --h2-size: calc(var(--font-body-size) * 3);
-    --h3-size: calc(var(--font-body-size) * 1.8);
-  }
-
 
   --indent: calc(var(--v-space) * 1.5);
 
@@ -36,6 +25,16 @@
   padding-right: var(--resume-h-padding);
   padding-top: var(--resume-t-padding);
   padding-bottom: var(--resume-b-padding);
+
+  @media (width >= 375px) {
+    --h2-size: calc(var(--font-body-size) * 2.5);
+    --h3-size: calc(var(--font-body-size) * 1.7);
+  }
+
+  @media (width >= 600px) {
+    --h2-size: calc(var(--font-body-size) * 3);
+    --h3-size: calc(var(--font-body-size) * 1.8);
+  }
 
   ul {
     list-style: none;
@@ -63,9 +62,6 @@
   section {
     margin-bottom: calc(var(--v-space) * 4);
   }
-
-
-
 
   h1,
   h2,
@@ -106,10 +102,10 @@
     font-weight: 700;
   }
 
-  @media(width >= 375px) {
+  @media (width >= 375px) {
     --resume-h-padding: calc(var(--v-space) * 2);
   }
-  @media(width >= 600px) {
+  @media (width >= 600px) {
     --resume-h-padding: calc(var(--v-space) * 4);
 
     .topLine {
@@ -140,7 +136,7 @@
         left: 0;
         border-left: 1px solid var(--color-accent-lighter);
         display: block;
-        content: '';
+        content: "";
         pointer-events: none;
       }
     }
@@ -174,7 +170,7 @@
     h4 {
       display: inline;
       &:after {
-        content: ': ';
+        content: ": ";
       }
     }
   }
@@ -188,7 +184,7 @@
   .schoolLocation {
     display: inline;
     &:before {
-      content: ' – ';
+      content: " – ";
     }
     color: var(--color-text-lighter);
     font-size: 0.85em;
@@ -200,7 +196,7 @@
   .dates {
     text-decoration: none;
     white-space: nowrap;
-    @media(width >= 600px) {
+    @media (width >= 600px) {
       padding-left: 1em;
     }
   }
