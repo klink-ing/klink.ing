@@ -1,281 +1,288 @@
 import * as React from "react";
-
+import * as fs from "fs";
+import * as path from "path";
+import Markdoc from "@markdoc/markdoc";
 import { Metadata } from "next/types";
 import styles from "./resume.module.scss";
+import { config } from "./markdoc-config";
+import { Stint, BulletList, CompactList, List } from "./markdoc-components";
 
-const Capabilities = () => (
-  <ul className={styles.bulletList}>
-    <li>
-      <h4>HTML</h4> Experience with creating clean, accessible, semantic markup
-      with an understanding of how code translates to document outlines for
-      screen readers.
-    </li>
-    <li>
-      <h4>CSS</h4> 20 years experience creating extensible and maintainable CSS
-      using a variety of techniques from the latest CSS-in-JS technologies, CSS
-      Custom Properties, pre-processors, post-processors or just plain pure CSS
-      <ul className={styles.compactList}>
-        <li>tailwind</li>
-        <li>CSS modules</li>
-        <li>styled-components</li>
-        <li>Sass</li>
-      </ul>
-    </li>
-    <li>
-      <h4>Front-end</h4> Component-based front-end development using React and
-      Typescript with a focus on functional programming principles
-      <ul className={styles.compactList}>
-        <li>React</li>
-        <li>Modern DOM APIs</li>
-        <li>NextJS</li>
-        <li>Vite</li>
-      </ul>
-    </li>
-    <li>
-      <h4>Design</h4> A graphic design background gives me a keen eye for detail
-      and focus on coding that preserves visual fidelity and usability as well
-      as experience with visual design tools.
-      <ul className={styles.compactList}>
-        <li>Figma</li>
-        <li>Photoshop</li>
-        <li>Illustrator</li>
-        <li>After Effects</li>
-      </ul>
-    </li>
-  </ul>
-);
+// Helper function to extract sections from rendered content
+function extractSections(children: React.ReactNode): {
+  capabilities: React.ReactNode;
+  rest: React.ReactNode;
+} {
+  const childrenArray = React.Children.toArray(children);
+  let capabilities: React.ReactNode = null;
+  const rest: React.ReactNode[] = [];
 
-const Stint: React.FunctionComponent<{
-  title: React.ReactNode;
-  start?: string;
-  end?: string;
-  location: string;
-  organization: string;
-  url?: string;
-  children?: React.ReactNode;
-}> = ({ title, start, end, location, organization, url, children }) => (
-  <>
-    <div className={styles.topLine}>
-      <h3 className={styles.jobTitle}>{title}</h3>
-      <div style={{ whiteSpace: "nowrap" }} className={styles.dates}>
-        {start}
-        {start && end && <> – </>}
-        {end}
-      </div>
-    </div>
-    <div className={styles.organization}>
-      {url ? (
-        <a href={url} target="_blank">
-          {organization}
-        </a>
-      ) : (
-        organization
-      )}
-    </div>
-    <div className={styles.location}>{location}</div>
-    {children}
-  </>
-);
+  let currentSection: string | null = null;
+  let sectionContent: React.ReactNode[] = [];
 
-const Resume = () => (
-  <article className={styles.resume}>
+  childrenArray.forEach((child) => {
+    if (React.isValidElement(child)) {
+
+      // Check for section wrapper containing Capabilities
+      if (child.type === "section") {
+        const sectionProps = child.props as React.HTMLAttributes<HTMLElement> & {
+          children?: React.ReactNode;
+        };
+        const sectionChildren = React.Children.toArray(sectionProps.children || []);
+        const h2Child = sectionChildren.find(
+          (c) => React.isValidElement(c) && c.type === "h2"
+        ) as React.ReactElement<React.HTMLAttributes<HTMLHeadingElement>> | undefined;
+
+        if (h2Child) {
+          const sectionText = String(h2Child.props.children || "");
+          if (sectionText === "Skills") {
+            capabilities = (
+              <section className={styles.capabilities}>
+                {sectionProps.children}
+              </section>
+            );
+            return;
+          }
+        }
+      }
+
+      // Check for h2 (section headings)
+      if (child.type === "h2") {
+        // Save previous section
+        if (currentSection === "Capabilities" && sectionContent.length > 0) {
+          capabilities = (
+            <section className={styles.capabilities}>
+              <h2>Capabilities</h2>
+              {sectionContent}
+            </section>
+          );
+        } else if (currentSection && sectionContent.length > 0) {
+          rest.push(...sectionContent);
+        }
+
+        const sectionText = String(
+          (child.props as React.HTMLAttributes<HTMLHeadingElement>).children || ""
+        );
+        currentSection = sectionText;
+        sectionContent = [child];
+        return;
+      }
+
+      // Add to current section or rest
+      if (currentSection === "Capabilities") {
+        sectionContent.push(child);
+      } else if (currentSection) {
+        sectionContent.push(child);
+      } else {
+        rest.push(child);
+      }
+    } else {
+      if (currentSection === "Capabilities") {
+        sectionContent.push(child);
+      } else if (currentSection) {
+        sectionContent.push(child);
+      } else {
+        rest.push(child);
+      }
+    }
+  });
+
+  // Handle last section
+  if (currentSection === "Capabilities" && sectionContent.length > 0) {
+    capabilities = (
+      <section className={styles.capabilities}>
+        <h2>Capabilities</h2>
+        {sectionContent.filter((item) => {
+          // Filter out the h2 heading as we'll add it manually
+          return !(React.isValidElement(item) && item.type === "h2");
+        })}
+      </section>
+    );
+  } else if (currentSection && sectionContent.length > 0) {
+    rest.push(...sectionContent);
+  }
+
+  return { capabilities, rest: <>{rest}</> };
+}
+
+// Component mapping for Markdoc
+const components = {
+  Stint,
+  BulletList,
+  CompactList,
+  List,
+  // Standard HTML elements
+  h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h1 {...props} />,
+  h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h2 {...props} />,
+  h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h3 {...props} />,
+  p: (props: React.HTMLAttributes<HTMLParagraphElement>) => <p {...props} />,
+  ul: (props: React.HTMLAttributes<HTMLUListElement>) => <ul {...props} />,
+  li: (props: React.HTMLAttributes<HTMLLIElement>) => <li {...props} />,
+  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => <a {...props} />,
+  article: (props: React.HTMLAttributes<HTMLElement>) => <article {...props} />,
+  header: (props: React.HTMLAttributes<HTMLElement>) => <header {...props} />,
+  section: (props: React.HTMLAttributes<HTMLElement> & { children?: React.ReactNode }) => {
+    const { children, ...restProps } = props;
+    const childrenArray = React.Children.toArray(children);
+    
+    // Check if this section contains stints (Experience or Education)
+    const hasStints = childrenArray.some((child) => 
+      React.isValidElement(child) && 
+      (child.type === Stint || 
+       (typeof child === "object" && "type" in child && child.type === Stint))
+    );
+    
+    // Check section type from h2 heading
+    const sectionHeading = childrenArray.find((child) =>
+      React.isValidElement(child) && child.type === "h2"
+    ) as React.ReactElement<React.HTMLAttributes<HTMLHeadingElement>> | undefined;
+    const sectionText = sectionHeading
+      ? String(sectionHeading.props.children || "")
+      : "";
+    
+    if (hasStints && (sectionText === "Experience" || sectionText === "Education")) {
+      const stints = childrenArray.filter((child) =>
+        React.isValidElement(child) && child.type === Stint
+      );
+      const otherChildren = childrenArray.filter((child) =>
+        !(React.isValidElement(child) && child.type === Stint)
+      );
+      
+      return (
+        <section
+          {...restProps}
+          style={
+            sectionText === "Experience"
+              ? { pageBreakBefore: "always", ...restProps.style }
+              : restProps.style
+          }
+          className={
+            sectionText === "Education"
+              ? `${styles.education} ${restProps.className || ""}`.trim()
+              : restProps.className
+          }
+        >
+          {otherChildren}
+          <ul className={styles.block}>
+            {stints.map((stint, idx) => {
+              // Check if this stint has pageBreak attribute
+              const pageBreak = React.isValidElement(stint) && 
+                stint.props && 
+                typeof stint.props === "object" &&
+                stint.props !== null &&
+                "pageBreak" in stint.props && 
+                (stint.props as { pageBreak?: boolean }).pageBreak === true;
+              
+              return (
+                <li 
+                  key={idx} 
+                  style={pageBreak ? { pageBreakBefore: "always" } : undefined}
+                >
+                  {stint}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      );
+    }
+    
+    return <section {...props} />;
+  },
+};
+
+interface Frontmatter {
+  name: string;
+  github: string;
+  email: string;
+}
+
+function parseFrontmatter(content: string): { frontmatter: Frontmatter; markdown: string } {
+  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
+  const match = content.match(frontmatterRegex);
+
+  if (!match) {
+    throw new Error("Frontmatter not found in markdoc file");
+  }
+
+  const frontmatterText = match[1];
+  const markdown = match[2];
+
+  // Parse YAML frontmatter (simple parser for name, github, email)
+  const frontmatter: Partial<Frontmatter> = {};
+  frontmatterText.split("\n").forEach((line) => {
+    const colonIndex = line.indexOf(":");
+    if (colonIndex > 0) {
+      const key = line.substring(0, colonIndex).trim();
+      const value = line.substring(colonIndex + 1).trim().replace(/^["']|["']$/g, "");
+      if (key === "name" || key === "github" || key === "email") {
+        frontmatter[key as keyof Frontmatter] = value;
+      }
+    }
+  });
+
+  if (!frontmatter.name || !frontmatter.github || !frontmatter.email) {
+    throw new Error("Missing required frontmatter fields: name, github, email");
+  }
+
+  return {
+    frontmatter: frontmatter as Frontmatter,
+    markdown,
+  };
+}
+
+function getResumeContent() {
+  const filePath = path.join(process.cwd(), "resume.markdoc.md");
+  return fs.readFileSync(filePath, "utf-8");
+}
+
+// Server component - no client-side rendering needed
+const Resume = () => {
+  const fileContent = getResumeContent();
+  const { frontmatter, markdown } = parseFrontmatter(fileContent);
+  
+  const ast = Markdoc.parse(markdown);
+  const content = Markdoc.transform(ast, config);
+  
+  // Render the entire content - Markdoc will handle the structure
+  const rendered = Markdoc.renderers.react(content, React, { components });
+
+  // Extract capabilities and rest of content (header comes from frontmatter)
+  const { capabilities, rest } = extractSections(rendered);
+
+  // Create header from frontmatter
+  // Extract GitHub username from URL
+  const githubUsername = frontmatter.github
+    .replace(/^https?:\/\/(www\.)?github\.com\//, "")
+    .replace(/\/$/, "");
+  
+  const header = (
     <header>
-      <h1>Chris Klink</h1>
+      <h1>{frontmatter.name}</h1>
       <ul>
         <li>
-          <a target="_blank" href="https://github.com/dogmar/">
-            dogmar@github
+          <a target="_blank" href={frontmatter.github}>
+            {githubUsername}@github
           </a>
         </li>
         <li>
-          <a href="mailto:chris@klink.ink">chris@klink.ink</a>
+          <a href={`mailto:${frontmatter.email}`}>{frontmatter.email}</a>
         </li>
       </ul>
     </header>
-    <section className={styles.capabilities}>
-      <h2>Capabilities</h2>
-      <Capabilities />
-    </section>
-    <section style={{ pageBreakBefore: "always" }}>
-      <h2>Experience</h2>
-      <ul className={styles.block}>
-        <li>
-          <Stint
-            title="Software Engineer"
-            organization="Cleanlab"
-            url="https://cleanlab.ai"
-            location="San Francisco, CA"
-            start="2024"
-            end="Present"
-          >
-            <ul className={styles.bulletList}>
-              <li>
-                Led the development of a custom front-end component library,
-                modernizing the UI framework by migrating from Chakra-UI to a
-                more flexible and scalable solution.
-              </li>
-              <li>
-                Designed and built user interfaces for AI-driven products,
-                integrating REST APIs with React, Next.js, and Tailwind CSS to
-                create seamless user experiences.
-              </li>
-              <li>
-                Collaborated closely with product and engineering teams to
-                refine UI/UX strategies, improving functionality and user
-                engagement.
-              </li>
-            </ul>
-          </Stint>
-        </li>
-        <li>
-          <Stint
-            title="Software Engineer"
-            organization="Plural"
-            url="https://plural.sh"
-            location="Remote"
-            start="2022"
-            end="2024"
-          >
-            <ul className={styles.bulletList}>
-              <li>
-                Built intuitive user interfaces for a Kubernetes management
-                dashboard, leveraging GraphQL, React, Vite, and Styled
-                Components to enhance usability and responsiveness.
-              </li>
-              <li>
-                Developed and maintained a reusable front-end component library
-                to ensure consistency and efficiency across multiple products.
-              </li>
-              <li>
-                Designed and implemented marketing and documentation websites,
-                optimizing performance and accessibility.
-              </li>
-            </ul>
-          </Stint>
-        </li>
-        <li style={{ pageBreakBefore: "always" }}>
-          <Stint
-            title="Senior Designer/Developer"
-            organization="Camp + King"
-            url="https://camp-king.com"
-            location="San Francisco, CA"
-            start="2015"
-            end="2022"
-          >
-            <ul className={styles.bulletList}>
-              <li>
-                Designed and developed promotional websites for clients, meeting
-                the needs of accessibility, fast loading times and
-                maintainability, while maintaining all web services for the
-                agency.
-              </li>
-              <li>
-                Created HTML/JS-based banner ads with a focus on providing rich
-                animations in very small file sizes.
-              </li>
-              <li>
-                Created interactive web tools for real estate agents to create
-                custom promotional graphics to share with their clients:
-                <ul className={styles.compactList}>
-                  <li>
-                    <a href=" https://www.remaxhustle.com/welcome-mat/select-mat">
-                      RE/MAX Welcome Mats
-                    </a>
-                  </li>
-                  <li>
-                    <a href="https://www.remaxhustle.com/hustlegraphic">
-                      RE/MAX Hustlegraphics
-                    </a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                Created motion graphics and illustrations for national ad
-                campaigns, including scripting reusable and customizable
-                templates in After Effects and Photoshop.
-              </li>
-            </ul>
-          </Stint>
-        </li>
-        <li>
-          <Stint
-            title="Senior Interactive Designer"
-            organization="FCB"
-            location="Seattle, WA + San Francisco, CA"
-            start="2008"
-            end="2015"
-            url="https://www.fcb.com/"
-          >
-            <ul className={styles.bulletList}>
-              <li>
-                Designed and developed interactive promotional sites for clients
-              </li>
-              <li>Created print advertisements for clients</li>
-              <li>Designed and animated digital advertisements</li>
-            </ul>
-          </Stint>
-        </li>
-        <li style={{ pageBreakBefore: "always" }}>
-          <Stint
-            title="Embedded Software Engineer"
-            organization="The Boeing Company"
-            location="Renton, WA"
-            start="2003"
-            end="2004"
-            url="http://www.boeing.com/"
-          >
-            <ul className={styles.bulletList}>
-              <li>
-                Programmed bit-level communications software in C++ for aircraft
-              </li>
-              <li>
-                Interpreted military specifications for implementation in
-                software
-              </li>
-            </ul>
-          </Stint>
-        </li>
-      </ul>
-    </section>
-    <section className={styles.education}>
-      <h2>Education</h2>
-      <ul className={styles.block}>
-        <li>
-          <Stint
-            title={
-              <>
-                Associate of Applied Science in{" "}
-                <span style={{ whiteSpace: "nowrap" }}>Graphic Design</span>
-              </>
-            }
-            organization="Seattle Central Creative Academy"
-            location="Seattle, WA"
-            end="2008"
-            url="http://seattlecentralcreativeacademy.com/"
-          />
-        </li>
-        <li>
-          <Stint
-            title={
-              <>
-                Bachelor of Science in{" "}
-                <span style={{ whiteSpace: "nowrap" }}>Computer Science</span>
-              </>
-            }
-            organization="Western Washington University"
-            location="Bellingham, WA"
-            end="2003"
-            url="https://www.wwu.edu/"
-          />
-        </li>
-      </ul>
-    </section>
-  </article>
-);
+  );
+
+  return (
+    <article className={styles.resume}>
+      {header}
+      {capabilities}
+      {rest}
+    </article>
+  );
+};
 
 export const metadata: Metadata = {
   title: "Klink - Resumé",
-  description: "What’s Klink been up to?",
+  description: "What's Klink been up to?",
 };
 
 export default Resume;
