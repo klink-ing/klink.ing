@@ -3,28 +3,9 @@
 - [dogmar@github](https://github.com/dogmar/)
 - [chris@klink.ink](mailto:chris@klink.ink)
 
-## Capabilities
-
-- **HTML** Experience with creating clean, accessible, semantic markup with an understanding of how code translates to document outlines for screen readers.
-- **CSS** 20 years experience creating extensible and maintainable CSS using a variety of techniques from the latest CSS-in-JS technologies, CSS Custom Properties, pre-processors, post-processors or just plain pure CSS
-  - tailwind
-  - CSS modules
-  - styled-components
-  - Sass
-- **Front-end** Component-based front-end development using React and Typescript with a focus on functional programming principles
-  - React
-  - Modern DOM APIs
-  - NextJS
-  - Vite
-- **Design** A graphic design background gives me a keen eye for detail and focus on coding that preserves visual fidelity and usability as well as experience with visual design tools.
-  - Figma
-  - Photoshop
-  - Illustrator
-  - After Effects
-
 ## Experience
 
-### Software Engineer
+### Front End Engineer
 
 2024 – Present
 
@@ -32,11 +13,11 @@
 
 San Francisco, CA
 
-- Led the development of a custom front-end component library, modernizing the UI framework by migrating from Chakra-UI to a more flexible and scalable solution.
-- Designed and built user interfaces for AI-driven products, integrating REST APIs with React, Next.js, and Tailwind CSS to create seamless user experiences.
-- Collaborated closely with product and engineering teams to refine UI/UX strategies, improving functionality and user engagement.
+- Led the development of a custom front-end component library, modernizing the UI framework by migrating from Chakra-UI to a more flexible and scalable solution built with React, TypeScript, and Tailwind CSS. The new component library improved developer productivity and enabled faster feature development across multiple AI-driven products.
+- Designed and built performant user interfaces for AI-driven products, integrating REST APIs with React, Next.js, and Tailwind CSS to create seamless user experiences. Implemented responsive layouts and optimized rendering for complex data visualizations and interactive workflows.
+- Collaborated closely with product and engineering teams to refine UI/UX strategies, improving functionality and user engagement. Translated design requirements into production-ready React components with a focus on accessibility and maintainability.
 
-### Software Engineer
+### Front End Engineer
 
 2022 – 2024
 
@@ -44,9 +25,9 @@ San Francisco, CA
 
 Remote
 
-- Built intuitive user interfaces for a Kubernetes management dashboard, leveraging GraphQL, React, Vite, and Styled Components to enhance usability and responsiveness.
-- Developed and maintained a reusable front-end component library to ensure consistency and efficiency across multiple products.
-- Designed and implemented marketing and documentation websites, optimizing performance and accessibility.
+- Built intuitive and responsive user interfaces for a Kubernetes management dashboard, leveraging GraphQL, React, Vite, and Styled Components to enhance usability and responsiveness. Developed complex data visualization components to display cluster metrics and system health information.
+- Developed and maintained a reusable front-end component library using React and TypeScript to ensure consistency and efficiency across multiple products. The component library reduced development time and improved design system adherence across the organization.
+- Designed and implemented marketing and documentation websites, optimizing performance and accessibility. Ensured fast page load times and implemented semantic HTML structure for improved SEO and screen reader compatibility.
 
 ### Senior Designer/Developer
 
@@ -56,12 +37,12 @@ Remote
 
 San Francisco, CA
 
-- Designed and developed promotional websites for clients, meeting the needs of accessibility, fast loading times and maintainability, while maintaining all web services for the agency.
-- Created HTML/JS-based banner ads with a focus on providing rich animations in very small file sizes.
-- Created interactive web tools for real estate agents to create custom promotional graphics to share with their clients:
+- Designed and developed performant promotional websites for clients using modern front-end technologies, meeting requirements for accessibility, fast loading times, and maintainability. Maintained all web services for the agency, ensuring high availability and optimal performance.
+- Created HTML/JS-based banner ads with a focus on providing rich animations in very small file sizes, optimizing for network constraints while maintaining visual quality. Implemented efficient animation techniques to achieve smooth performance within strict file size limitations.
+- Built interactive web tools for real estate agents to create custom promotional graphics, enabling users to generate and share branded marketing materials. Developed complex canvas-based graphics generation systems with real-time preview capabilities:
   - [RE/MAX Welcome Mats](https://www.remaxhustle.com/welcome-mat/select-mat)
   - [RE/MAX Hustlegraphics](https://www.remaxhustle.com/hustlegraphic)
-- Created motion graphics and illustrations for national ad campaigns, including scripting reusable and customizable templates in After Effects and Photoshop.
+- Created motion graphics and illustrations for national ad campaigns, including scripting reusable and customizable templates in After Effects and Photoshop to streamline production workflows.
 
 ### Senior Interactive Designer
 
@@ -71,9 +52,9 @@ San Francisco, CA
 
 Seattle, WA + San Francisco, CA
 
-- Designed and developed interactive promotional sites for clients
-- Created print advertisements for clients
-- Designed and animated digital advertisements
+- Designed and developed interactive promotional websites for clients using HTML, CSS, and JavaScript, creating engaging user experiences that met brand guidelines and technical requirements.
+- Created print advertisements for clients, applying graphic design principles to deliver high-quality visual communications.
+- Designed and animated digital advertisements, developing creative concepts and implementing them across various digital platforms.
 
 ### Embedded Software Engineer
 
@@ -83,8 +64,14 @@ Seattle, WA + San Francisco, CA
 
 Renton, WA
 
-- Programmed bit-level communications software in C++ for aircraft
-- Interpreted military specifications for implementation in software
+- Programmed bit-level communications software in C++ for aircraft systems, implementing low-level protocols according to military specifications.
+- Interpreted military specifications for implementation in software, ensuring compliance with strict aerospace industry standards and requirements.
+
+## Skills
+
+**Languages:** HTML, CSS, JavaScript, TypeScript
+
+**Technologies:** React, Next.js, Tailwind CSS, CSS Modules, Styled Components, GraphQL, Vite, Sass
 
 ## Education
 
@@ -103,4 +90,3 @@ Seattle, WA
 Bellingham, WA
 
 2003
-
