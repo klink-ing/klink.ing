@@ -96,7 +96,7 @@ const Resume = () => (
       <h2>Capabilities</h2>
       <Capabilities />
     </section>
-    <section>
+    <section style={{ pageBreakBefore: "always" }}>
       <h2>Experience</h2>
       <ul className={styles.block}>
         <li>
@@ -153,7 +153,7 @@ const Resume = () => (
             </ul>
           </Stint>
         </li>
-        <li>
+        <li style={{ pageBreakBefore: "always" }}>
           <Stint
             title="Senior Designer/Developer"
             organization="Camp + King"
@@ -215,7 +215,7 @@ const Resume = () => (
             </ul>
           </Stint>
         </li>
-        <li>
+        <li style={{ pageBreakBefore: "always" }}>
           <Stint
             title="Embedded Software Engineer"
             organization="The Boeing Company"
