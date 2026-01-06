@@ -16,7 +16,7 @@ San Francisco, CA
 - Led development of a custom front-end component library, modernizing the UI framework by migrating from Chakra-UI to a flexible, scalable solution built with React, TypeScript, and Tailwind CSS. Improved developer productivity and enabled faster feature development across multiple AI-driven products.
 - Developed a performant multi-threaded chat interface using React and Next.js to demonstrate Cleanlab's hallucination-detection system in real-time. Became a critical sales tool used in every sales interaction, directly supporting the go-to-market team's efforts and contributing to revenue generation.
 - Designed and built performant front-end user interfaces for AI-driven products, integrating REST APIs with React, Next.js, and Tailwind CSS. Implemented responsive layouts, optimized rendering for complex data visualizations and interactive workflows, and improved performance through code splitting and lazy loading in Next.js.
-- Collaborated with product and engineering teams to refine UI/UX strategies, translating design requirements into production-ready React components with a focus on accessibility and maintainability.
+- Collaborated with product and engineering teams to refine UI/UX strategies, translating design requirements into production-ready React components with a focus on user experience, accessibility and maintainability.
 
 ### Front End Engineer
 
@@ -68,11 +68,30 @@ Renton, WA
 
 ## Skills
 
-**Languages:** HTML, CSS, JavaScript, TypeScript
+### Languages
 
-**Technologies:** React, Next.js, Tailwind CSS, CSS Modules, Styled Components, GraphQL, Vite, Sass
+- HTML
+- CSS
+- JavaScript
+- TypeScript
 
-**Design Tools:** Figma, Photoshop, Illustrator, After Effects
+### Technologies
+
+- React
+- Next.js
+- Tailwind CSS
+- CSS Modules
+- Styled Components
+- GraphQL
+- Vite
+- Sass
+
+### Design Tools:
+
+- Figma
+- Photoshop
+- Illustrator
+- After Effects
 
 ## Education
 
