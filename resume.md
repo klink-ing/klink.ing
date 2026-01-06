@@ -15,7 +15,7 @@ San Francisco, CA
 
 - Led the development of a custom front-end component library, modernizing the UI framework by migrating from Chakra-UI to a more flexible and scalable solution built with React, TypeScript, and Tailwind CSS. The new component library improved developer productivity and enabled faster feature development across multiple AI-driven products.
 - Developed a performant multi-threaded chat interface using React and Next.js to demonstrate Cleanlab's hallucination-detection system in real-time. The application became a critical sales tool, used in every sales interaction to showcase product capabilities, directly supporting the go-to-market team's efforts and contributing to revenue generation.
-- Designed and built performant user interfaces for AI-driven products, integrating REST APIs with React, Next.js, and Tailwind CSS to create seamless user experiences. Implemented responsive layouts, optimized rendering for complex data visualizations and interactive workflows, and improved performance through code splitting and lazy loading strategies in Next.js.
+- Designed and built performant front-end user interfaces for AI-driven products, integrating REST APIs with React, Next.js, and Tailwind CSS to create seamless user experiences. Implemented responsive layouts, optimized rendering for complex data visualizations and interactive workflows, and improved performance through code splitting and lazy loading strategies in Next.js.
 - Collaborated closely with product and engineering teams to refine UI/UX strategies, translating design requirements into production-ready React components with a focus on accessibility, maintainability, and improved user experience.
 
 ### Front End Engineer
@@ -26,7 +26,7 @@ San Francisco, CA
 
 Remote
 
-- Built intuitive and responsive user interfaces for a Kubernetes management dashboard, leveraging GraphQL, React, Vite, and Styled Components to enhance usability and responsiveness. Developed complex data visualization components to display cluster metrics and system health information, enabling operations teams to monitor and manage infrastructure effectively.
+- Built intuitive and responsive front-end user interfaces for a Kubernetes management dashboard, leveraging GraphQL, React, Vite, and Styled Components to enhance usability and responsiveness. Developed complex data visualization components to display cluster metrics and system health information, enabling operations teams to monitor and manage infrastructure effectively.
 - Developed and maintained a reusable front-end component library using React and TypeScript to ensure consistency and efficiency across multiple products. The component library reduced development time and improved design system adherence across the organization, standardizing UI patterns and reducing code duplication.
 - Designed and implemented marketing and documentation websites, optimizing performance and accessibility. Ensured fast page load times and implemented semantic HTML structure for improved SEO and screen reader compatibility, enhancing discoverability and user experience.
 - Integrated GraphQL APIs with React components using modern data fetching patterns, implementing efficient caching strategies and optimistic UI updates to create responsive user experiences that handle real-time data updates seamlessly.
