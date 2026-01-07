@@ -1,6 +1,7 @@
 import * as React from "react";
 import styles from "./resume.module.scss";
 
+
 // Stint component for job/education entries
 export const Stint: React.FunctionComponent<{
   title: React.ReactNode;
@@ -11,14 +12,26 @@ export const Stint: React.FunctionComponent<{
   url?: string;
   children?: React.ReactNode;
   pageBreak?: boolean;
-}> = ({ title, start, end, location, organization, url, children, pageBreak }) => {
+}> = ({
+  title,
+  start,
+  end,
+  location,
+  organization,
+  url,
+  children,
+  pageBreak,
+}) => {
   // Handle special title formatting for education entries
-  const formattedTitle = typeof title === "string" && title.includes(" in ") ? (
-    <>
-      {title.split(" in ")[0]} in{" "}
-      <span style={{ whiteSpace: "nowrap" }}>{title.split(" in ")[1]}</span>
-    </>
-  ) : title;
+  const formattedTitle =
+    typeof title === "string" && title.includes(" in ") ? (
+      <>
+        {title.split(" in ")[0]} in{" "}
+        <span style={{ whiteSpace: "nowrap" }}>{title.split(" in ")[1]}</span>
+      </>
+    ) : (
+      title
+    );
 
   const content = (
     <>
@@ -51,16 +64,20 @@ export const Stint: React.FunctionComponent<{
 // BulletList component - default list styling
 export const BulletList: React.FunctionComponent<{
   children?: React.ReactNode;
-}> = ({ children }) => (
-  <ul className={styles.bulletList}>{children}</ul>
-);
+}> = ({ children }) => <ul className={styles.bulletList}>{children}</ul>;
 
-// CompactList component - compact list styling for Skills section
-export const CompactList: React.FunctionComponent<{
+// SkillsList component - compact list styling for Skills section
+export const SkillsList: React.FunctionComponent<{
   children?: React.ReactNode;
-}> = ({ children }) => (
-  <ul className={styles.compactList}>{children}</ul>
-);
+}> = ({ children,heading, ...props }) => {
+  console.log(props);
+  return (
+    <>
+      <h4>{heading ?? 'hi'}</h4>
+      <ul className={styles.compactList}>{children}</ul>
+    </>
+  );
+};
 
 // List component - handles regular markdown lists
 // Defaults to bulletList unless inside a compactList tag
@@ -72,4 +89,3 @@ export const List: React.FunctionComponent<{
   // Default to bulletList className for regular lists
   return <Component className={styles.bulletList}>{children}</Component>;
 };
-

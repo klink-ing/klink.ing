@@ -5,7 +5,7 @@ import Markdoc from "@markdoc/markdoc";
 import { Metadata } from "next/types";
 import styles from "./resume.module.scss";
 import { config } from "./markdoc-config";
-import { Stint, BulletList, CompactList, List } from "./markdoc-components";
+import { Stint, BulletList, SkillsList, List } from "./markdoc-components";
 
 // Helper function to extract sections from rendered content
 function extractSections(children: React.ReactNode): {
@@ -22,7 +22,7 @@ function extractSections(children: React.ReactNode): {
   childrenArray.forEach((child) => {
     if (React.isValidElement(child)) {
 
-      // Check for section wrapper containing Capabilities
+      // Check for section wrapper containing Skills
       if (child.type === "section") {
         const sectionProps = child.props as React.HTMLAttributes<HTMLElement> & {
           children?: React.ReactNode;
@@ -35,9 +35,14 @@ function extractSections(children: React.ReactNode): {
         if (h2Child) {
           const sectionText = String(h2Child.props.children || "");
           if (sectionText === "Skills") {
+            // Render Skills section as Capabilities
             capabilities = (
               <section className={styles.capabilities}>
-                {sectionProps.children}
+                <h2>Capabilities</h2>
+                {sectionChildren.filter((c) => {
+                  // Filter out the h2 heading as we'll add it manually
+                  return !(React.isValidElement(c) && c.type === "h2");
+                })}
               </section>
             );
             return;
@@ -48,11 +53,15 @@ function extractSections(children: React.ReactNode): {
       // Check for h2 (section headings)
       if (child.type === "h2") {
         // Save previous section
-        if (currentSection === "Capabilities" && sectionContent.length > 0) {
+        if (currentSection === "Skills" && sectionContent.length > 0) {
+          // Render Skills section as Capabilities
           capabilities = (
             <section className={styles.capabilities}>
               <h2>Capabilities</h2>
-              {sectionContent}
+              {sectionContent.filter((item) => {
+                // Filter out the h2 heading as we'll add it manually
+                return !(React.isValidElement(item) && item.type === "h2");
+              })}
             </section>
           );
         } else if (currentSection && sectionContent.length > 0) {
@@ -68,7 +77,7 @@ function extractSections(children: React.ReactNode): {
       }
 
       // Add to current section or rest
-      if (currentSection === "Capabilities") {
+      if (currentSection === "Skills") {
         sectionContent.push(child);
       } else if (currentSection) {
         sectionContent.push(child);
@@ -87,7 +96,8 @@ function extractSections(children: React.ReactNode): {
   });
 
   // Handle last section
-  if (currentSection === "Capabilities" && sectionContent.length > 0) {
+  if (currentSection === "Skills" && sectionContent.length > 0) {
+    // Render Skills section as Capabilities
     capabilities = (
       <section className={styles.capabilities}>
         <h2>Capabilities</h2>
@@ -108,7 +118,7 @@ function extractSections(children: React.ReactNode): {
 const components = {
   Stint,
   BulletList,
-  CompactList,
+  SkillsList: SkillsList,
   List,
   // Standard HTML elements
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => <h1 {...props} />,

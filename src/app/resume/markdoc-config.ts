@@ -19,9 +19,11 @@ export const config: Config = {
       render: "BulletList",
       attributes: {},
     },
-    compactList: {
-      render: "CompactList",
-      attributes: {},
+    skillsList: {
+      render: "SkillsList",
+      attributes: {
+        heading: { type: String, required: true },
+      },
     },
   },
   nodes: {
