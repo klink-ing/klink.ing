@@ -176,11 +176,38 @@
   }
 
   .capabilities {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.5em 1em;
+    align-items: baseline;
+
+    h2 {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .skillsListItem {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    align-items: baseline;
+
     h4 {
       display: inline;
+      margin: 0;
+      grid-column: 1;
+      white-space: nowrap;
       &:after {
         content: ": ";
       }
+    }
+
+    ul.compactList {
+      grid-column: 2;
+      display: inline-flex;
+      flex-wrap: wrap;
+      margin: 0;
+      padding: 0;
     }
   }
 
