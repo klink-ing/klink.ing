@@ -49,6 +49,55 @@ function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
   });
 }
 
+// Helper function to process nested lists and apply compactList to them
+function processNestedLists(children: React.ReactNode): React.ReactNode {
+  return React.Children.map(children, (child) => {
+    if (!React.isValidElement(child)) {
+      return child;
+    }
+
+    // If it's a List component, replace with compactList version
+    if (child.type === List) {
+      const listProps = child.props as { ordered?: boolean; children?: React.ReactNode };
+      const Component = listProps.ordered ? "ol" : "ul";
+      return (
+        <Component className={styles.compactList}>
+          {processNestedLists(listProps.children)}
+        </Component>
+      );
+    }
+
+    // If it's a ul or ol element, add compactList class
+    if (child.type === "ul" || child.type === "ol") {
+      const listProps = child.props as React.HTMLAttributes<HTMLUListElement | HTMLOListElement>;
+      const existingClass = listProps.className || "";
+      const className = existingClass.includes(styles.compactList)
+        ? existingClass
+        : `${styles.compactList} ${existingClass}`.trim();
+      const Component = child.type;
+      return (
+        <Component {...listProps} className={className}>
+          {processNestedLists(listProps.children)}
+        </Component>
+      );
+    }
+
+    // Recursively process children if element has children prop
+    const childProps = child.props as { children?: React.ReactNode } & Record<string, unknown>;
+    if (childProps && typeof childProps === "object" && "children" in childProps) {
+      return React.cloneElement(
+        child as React.ReactElement<{ children?: React.ReactNode }>,
+        {
+          ...childProps,
+          children: processNestedLists(childProps.children),
+        }
+      );
+    }
+
+    return child;
+  });
+}
+
 
 // Stint component for job/education entries
 export const Stint: React.FunctionComponent<{
@@ -115,9 +164,13 @@ export const Stint: React.FunctionComponent<{
 };
 
 // BulletList component - default list styling
+// Nested lists use compactList
 export const BulletList: React.FunctionComponent<{
   children?: React.ReactNode;
-}> = ({ children }) => <ul className={styles.bulletList}>{children}</ul>;
+}> = ({ children }) => {
+  const processedChildren = processNestedLists(children);
+  return <ul className={styles.bulletList}>{processedChildren}</ul>;
+};
 
 // SkillsSection component - grid container for skills lists
 export const SkillsSection: React.FunctionComponent<{
@@ -146,12 +199,13 @@ export const SkillsList: React.FunctionComponent<{
 };
 
 // List component - handles regular markdown lists
-// Defaults to bulletList (SkillsList will process its children to use compactList)
+// Defaults to bulletList, but nested lists use compactList
 export const List: React.FunctionComponent<{
   ordered?: boolean;
   children?: React.ReactNode;
 }> = ({ ordered, children }) => {
   const Component = ordered ? "ol" : "ul";
-  // Default to bulletList - SkillsList will transform this if needed
-  return <Component className={styles.bulletList}>{children}</Component>;
+  // Process children to apply compactList to nested lists
+  const processedChildren = processNestedLists(children);
+  return <Component className={styles.bulletList}>{processedChildren}</Component>;
 };
