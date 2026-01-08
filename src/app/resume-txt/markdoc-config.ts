@@ -19,12 +19,6 @@ export const config: Config = {
       render: "BulletList",
       attributes: {},
     },
-    skillsList: {
-      render: "SkillsList",
-      attributes: {
-        heading: { type: String, required: true },
-      },
-    },
     skillsSection: {
       render: "SkillsSection",
       attributes: {},
@@ -39,4 +33,3 @@ export const config: Config = {
     },
   },
 };
-

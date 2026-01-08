@@ -7,7 +7,6 @@ import { config } from "./markdoc-config";
 import {
   Stint,
   BulletList,
-  SkillsList,
   List,
   SkillsSection,
 } from "./markdoc-components";
@@ -52,7 +51,6 @@ const Ul: React.FunctionComponent<React.HTMLAttributes<HTMLUListElement>> = (
 const components = {
   Stint,
   BulletList,
-  SkillsList,
   SkillsSection,
   List,
   // Standard HTML elements
@@ -180,8 +178,6 @@ function parseFrontmatter(content: string): {
       }
     }
   });
-
-
 
   return {
     frontmatter: frontmatter as Frontmatter,

@@ -1,11 +1,10 @@
 import * as React from "react";
 import styles from "./resume.module.scss";
 
-
-
 // Helper function to process children and ensure lists use compactList
 function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
-  return React.Children.map(children, (child) => {
+  const childrenArray = React.Children.toArray(children);
+  return React.Children.map(children, (child, index) => {
     if (!React.isValidElement(child)) {
       return child;
     }
@@ -15,7 +14,16 @@ function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
       const listProps = child.props as {
         children?: React.ReactNode;
       };
-      return <>{listProps.children},</>;
+      // Only add comma if the next child is also an li element
+      const nextChild = childrenArray[index + 1];
+      const hasNextLi =
+        React.isValidElement(nextChild) && nextChild.type === "li";
+      return (
+        <>
+          {listProps.children}
+          {hasNextLi && ","}
+        </>
+      );
     }
 
     // Recursively process children if element has children prop
@@ -41,6 +49,78 @@ function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
   });
 }
 
+const splitChildrenByLines = (
+  children: React.ReactNode,
+  lineLength: number = 80,
+  prefix: string = " - ",
+  indent: string = "   "
+): string[] => {
+  // Helper to extract text from React.ReactNode
+  const extractText = (node: React.ReactNode): string => {
+    if (typeof node === "string" || typeof node === "number") {
+      return String(node);
+    }
+    if (Array.isArray(node)) {
+      return node.map(extractText).join("");
+    }
+    if (React.isValidElement(node)) {
+      const props = node.props as { children?: React.ReactNode };
+      return extractText(props.children);
+    }
+    return "";
+  };
+
+  // Extract all text from children
+  const text = extractText(children).trim();
+
+  if (!text) {
+    return [];
+  }
+
+  // Normalize whitespace: replace multiple spaces with single space
+  const normalizedText = text.replace(/\s+/g, " ");
+
+  // Split into words
+  const words = normalizedText.split(" ").filter((w) => w.length > 0);
+  const lines: string[] = [];
+  let currentLine = prefix;
+  let isFirstLine = true;
+
+  for (const word of words) {
+    // Determine if we need a space before the word
+    const needsSpace = currentLine.length > 0 && !currentLine.endsWith(" ");
+    const separator = needsSpace ? " " : "";
+    const testLine = currentLine + separator + word;
+
+    // Check if adding this word would exceed line length
+    // Only wrap if we have at least one word on the current line
+    const lineHasWords = isFirstLine
+      ? currentLine.length > prefix.length
+      : currentLine.length > indent.length;
+
+    if (testLine.length > lineLength && lineHasWords) {
+      // Save current line
+      lines.push(currentLine + "\n");
+      // Start new line with indent
+      currentLine = indent + word;
+      isFirstLine = false;
+    } else {
+      // Add word to current line
+      currentLine = testLine;
+      isFirstLine = false;
+    }
+  }
+
+  // Add the last line if it has content
+  const lineHasWords =
+    currentLine.length > prefix.length || currentLine.length > indent.length;
+  if (lineHasWords) {
+    lines.push(currentLine + "\n");
+  }
+
+  return lines;
+};
+
 // Helper function to process nested lists and apply compactList to them
 function processNestedLists(children: React.ReactNode): React.ReactNode {
   return React.Children.map(children, (child) => {
@@ -49,17 +129,11 @@ function processNestedLists(children: React.ReactNode): React.ReactNode {
     }
 
     // If it's a List component, replace with compactList version
-    if (child.type === List) {
+    if (child.type === "li") {
       const listProps = child.props as {
-        ordered?: boolean;
         children?: React.ReactNode;
       };
-      const Component = listProps.ordered ? "ol" : "ul";
-      return (
-        <Component className={styles.compactList}>
-          {processNestedLists(listProps.children)}
-        </Component>
-      );
+      return splitChildrenByLines(listProps.children);
     }
 
     // If it's a ul or ol element, add compactList class
@@ -67,15 +141,12 @@ function processNestedLists(children: React.ReactNode): React.ReactNode {
       const listProps = child.props as React.HTMLAttributes<
         HTMLUListElement | HTMLOListElement
       >;
-      const existingClass = listProps.className || "";
-      const className = existingClass.includes(styles.compactList)
-        ? existingClass
-        : `${styles.compactList} ${existingClass}`.trim();
-      const Component = child.type;
+
       return (
-        <Component {...listProps} className={className}>
-          {processNestedLists(listProps.children)}
-        </Component>
+        <>
+          {"\n"}
+          {processSkillsListChildren(listProps.children)}
+        </>
       );
     }
 
@@ -131,20 +202,21 @@ export const Stint: React.FunctionComponent<{
       <>
         <>{formattedTitle}</>
         <>
+          {" "}
           {start}
           {start && end && <> – </>}
           {end}
           {"\n"}
         </>
       </>
-      <div className={styles.organization}>
+      <>
+        {" "}
         {organization}
         {url && <> ({url})</>}
         {"\n"}
-      </div>
+      </>
       <>
-        {location}
-        {"\n"}
+        {" "}{location}{"\n"}
       </>
       {children ? (
         <>
@@ -177,33 +249,13 @@ export const SkillsSection: React.FunctionComponent<{
   return <>{processedChildren}</>;
 };
 
-// SkillsList component - compact list styling for Skills section
-export const SkillsList: React.FunctionComponent<{
-  children?: React.ReactNode;
-  heading?: string;
-}> = ({ children, heading }) => {
-  // Process children to ensure all lists use compactList
-  // The markdown already creates a <ul> from list items, so we just process children
-  const processedChildren = processSkillsListChildren(children);
-
-  return (
-    <div className={styles.skillsListItem}>
-      {heading && <h4>{heading}</h4>}
-      {processedChildren}
-    </div>
-  );
-};
-
 // List component - handles regular markdown lists
 // Defaults to bulletList, but nested lists use compactList
 export const List: React.FunctionComponent<{
   ordered?: boolean;
   children?: React.ReactNode;
-}> = ({ ordered, children }) => {
-  const Component = ordered ? "ol" : "ul";
+}> = ({ children }) => {
   // Process children to apply compactList to nested lists
   const processedChildren = processNestedLists(children);
-  return (
-    <Component className={styles.bulletList}>{processedChildren}</Component>
-  );
+  return <>{processedChildren}</>;
 };

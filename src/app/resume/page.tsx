@@ -5,7 +5,7 @@ import Markdoc from "@markdoc/markdoc";
 import { Metadata } from "next/types";
 import styles from "./resume.module.scss";
 import { config } from "./markdoc-config";
-import { Stint, BulletList, SkillsList, List, SkillsSection } from "./markdoc-components";
+import { Stint, BulletList, List, SkillsSection } from "./markdoc-components";
 
 // Helper function to extract sections from rendered content
 function extractSections(children: React.ReactNode): {
@@ -108,7 +108,6 @@ const Ul: React.FunctionComponent<React.HTMLAttributes<HTMLUListElement>> = (
 const components = {
   Stint,
   BulletList,
-  SkillsList,
   SkillsSection,
   List,
   // Standard HTML elements
