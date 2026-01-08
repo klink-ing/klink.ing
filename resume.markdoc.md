@@ -88,16 +88,14 @@ email: chris@klink.ink
 
 {% skillsSection %}
 
-{% skillsList heading="Languages" %}
+#### Languages
 
 - HTML
 - CSS
 - JavaScript
 - TypeScript
 
-{% /skillsList %}
-
-{% skillsList heading="Technologies" %}
+#### Technologies
 
 - React
 - Next.js
@@ -108,16 +106,12 @@ email: chris@klink.ink
 - Vite
 - Sass
 
-{% /skillsList %}
+#### Design Tools
 
-{% skillsList heading="Design Tools" %}
-{% class="something" %}
 - Figma
 - Photoshop
 - Illustrator
 - After Effects
-
-{% /skillsList %}
 
 {% /skillsSection %}
 

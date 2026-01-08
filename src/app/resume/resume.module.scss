@@ -109,22 +109,28 @@
     --resume-h-padding: calc(var(--v-space) * 2);
   }
   .topLine {
+    margin-top: calc(var(--v-space) * 3);
+  }
+  :is(h1, h2, h3, h4, h5, h6) + .topLine {
     margin-top: var(--v-space);
-    &:not(:first-of-type) {
-      margin-top: calc(var(--v-space) * 3);
-    }
+  }
+  .topLineNoChildren {
+    margin-top: var(--v-space);
   }
   @media (width >= 600px) {
     --resume-h-padding: calc(var(--v-space) * 4);
 
     .topLine {
-      margin-top: var(--v-space);
-      &:not(:first-of-type) {
-        margin-top: calc(var(--v-space) * 4);
-      }
+      margin-top: calc(var(--v-space) * 4);
       display: flex;
       align-items: baseline;
       justify-content: space-between;
+    }
+    :is(h1, h2, h3, h4, h5, h6) + .topLine {
+      margin-top: var(--v-space);
+    }
+    .topLineNoChildren {
+      margin-top: var(--v-space);
     }
   }
 
@@ -156,7 +162,8 @@
       --line-height: 1.7em;
       --color-link: var(--color-accent-darker);
       // color: var(--color-accent);
-      display: inline-block;
+      display: inline-flex;
+      gap: 0.2em;
       margin-right: 0.2em;
       // background-color: var(--color-fill);
       font-family: $fontCondensed;
@@ -175,28 +182,10 @@
     }
   }
 
-  .capabilities {
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    gap: 0.5em 1em;
-    align-items: baseline;
-
-    h2 {
-      grid-column: 1 / -1;
-    }
-  }
-
   .skillsSection {
     display: grid;
     grid-template-columns: max-content 1fr;
     gap: 0.5em 1em;
-    align-items: baseline;
-  }
-
-  .skillsListItem {
-    display: grid;
-    grid-template-columns: subgrid;
-    grid-column: 1 / -1;
     align-items: baseline;
 
     h4 {
@@ -207,14 +196,6 @@
       &:after {
         content: ": ";
       }
-    }
-
-    ul.compactList {
-      grid-column: 2;
-      display: inline-flex;
-      flex-wrap: wrap;
-      margin: 0;
-      padding: 0;
     }
   }
 

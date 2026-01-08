@@ -81,9 +81,14 @@ export const Stint: React.FunctionComponent<{
       title
     );
 
+  const hasChildren = React.Children.count(children) > 0;
+  const topLineClassName = hasChildren
+    ? styles.topLine
+    : `${styles.topLine} ${styles.topLineNoChildren}`.trim();
+
   const content = (
     <>
-      <div className={styles.topLine}>
+      <div className={topLineClassName}>
         <h3 className={styles.jobTitle}>{formattedTitle}</h3>
         <div style={{ whiteSpace: "nowrap" }} className={styles.dates}>
           {start}
@@ -118,7 +123,9 @@ export const BulletList: React.FunctionComponent<{
 export const SkillsSection: React.FunctionComponent<{
   children?: React.ReactNode;
 }> = ({ children }) => {
-  return <div className={styles.skillsSection}>{children}</div>;
+  // Process children to ensure all lists use compactList (same as SkillsList did)
+  const processedChildren = processSkillsListChildren(children);
+  return <div className={styles.skillsSection}>{processedChildren}</div>;
 };
 
 // SkillsList component - compact list styling for Skills section
