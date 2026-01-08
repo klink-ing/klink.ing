@@ -82,13 +82,13 @@ export const Stint: React.FunctionComponent<{
     );
 
   const hasChildren = React.Children.count(children) > 0;
-  const topLineClassName = hasChildren
-    ? styles.topLine
-    : `${styles.topLine} ${styles.topLineNoChildren}`.trim();
+  const stintClassName = hasChildren
+    ? styles.stint
+    : `${styles.stint} ${styles.noChildren}`.trim();
 
   const content = (
-    <>
-      <div className={topLineClassName}>
+    <div className={stintClassName}>
+      <div className={styles.topLine}>
         <h3 className={styles.jobTitle}>{formattedTitle}</h3>
         <div style={{ whiteSpace: "nowrap" }} className={styles.dates}>
           {start}
@@ -107,7 +107,7 @@ export const Stint: React.FunctionComponent<{
       </div>
       <div className={styles.location}>{location}</div>
       {children}
-    </>
+    </div>
   );
 
   // Return content as-is - the parent section component will wrap in li

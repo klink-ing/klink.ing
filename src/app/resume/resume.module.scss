@@ -108,29 +108,25 @@
   @media (width >= 375px) {
     --resume-h-padding: calc(var(--v-space) * 2);
   }
-  .topLine {
+  .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
     margin-top: calc(var(--v-space) * 3);
   }
-  :is(h1, h2, h3, h4, h5, h6) + .topLine {
-    margin-top: var(--v-space);
-  }
-  .topLineNoChildren {
+  .stint.noChildren + .stint {
     margin-top: var(--v-space);
   }
   @media (width >= 600px) {
     --resume-h-padding: calc(var(--v-space) * 4);
 
-    .topLine {
+    .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
       margin-top: calc(var(--v-space) * 4);
+    }
+    .stint.noChildren + .stint {
+      margin-top: var(--v-space);
+    }
+    .topLine {
       display: flex;
       align-items: baseline;
       justify-content: space-between;
-    }
-    :is(h1, h2, h3, h4, h5, h6) + .topLine {
-      margin-top: var(--v-space);
-    }
-    .topLineNoChildren {
-      margin-top: var(--v-space);
     }
   }
 
