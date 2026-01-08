@@ -86,6 +86,8 @@ email: chris@klink.ink
 
 ## Skills
 
+{% skillsSection %}
+
 {% skillsList heading="Languages" %}
 
 - HTML
@@ -116,6 +118,8 @@ email: chris@klink.ink
 - After Effects
 
 {% /skillsList %}
+
+{% /skillsSection %}
 
 ## Education
 

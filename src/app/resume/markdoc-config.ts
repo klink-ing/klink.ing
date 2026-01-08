@@ -25,6 +25,10 @@ export const config: Config = {
         heading: { type: String, required: true },
       },
     },
+    skillsSection: {
+      render: "SkillsSection",
+      attributes: {},
+    },
   },
   nodes: {
     list: {

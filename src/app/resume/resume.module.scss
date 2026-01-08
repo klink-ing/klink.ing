@@ -186,6 +186,13 @@
     }
   }
 
+  .skillsSection {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.5em 1em;
+    align-items: baseline;
+  }
+
   .skillsListItem {
     display: grid;
     grid-template-columns: subgrid;

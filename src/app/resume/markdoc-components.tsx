@@ -114,6 +114,13 @@ export const BulletList: React.FunctionComponent<{
   children?: React.ReactNode;
 }> = ({ children }) => <ul className={styles.bulletList}>{children}</ul>;
 
+// SkillsSection component - grid container for skills lists
+export const SkillsSection: React.FunctionComponent<{
+  children?: React.ReactNode;
+}> = ({ children }) => {
+  return <div className={styles.skillsSection}>{children}</div>;
+};
+
 // SkillsList component - compact list styling for Skills section
 export const SkillsList: React.FunctionComponent<{
   children?: React.ReactNode;
