@@ -82,8 +82,12 @@ a:any-link {
 
 
 @page {
-  margin: 0.75in 0.75in 1in 0.75in;
+  margin-top: 0.75in;
+  margin-bottom: 0.75in;
+  margin-left: 0.85in;
+  margin-right: 1in;
 }
 @page :first {
-  margin-top: 0.5in;
+  margin-top: 0.6in;
+  margin-bottom: 0.75in;
 }

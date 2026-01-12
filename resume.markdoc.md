@@ -7,7 +7,7 @@ email: chris@klink.ink
 ## Experience
 
 {% stint
-  title="Front End Engineer"
+  title="Senior Frontend Engineer"
   start="2024"
   end="Present"
   organization="Cleanlab"
@@ -15,15 +15,15 @@ email: chris@klink.ink
   location="San Francisco, CA"
 %}
 
-- Led development of a custom front-end component library, migrating from Chakra-UI to a flexible, scalable solution with React, TypeScript, and Tailwind CSS. Improved developer productivity and enabled faster feature development across multiple AI-driven products.
+- Led development of a custom frontend component library, migrating from Chakra-UI to a flexible, scalable solution with React, TypeScript, and Tailwind CSS. Improved developer productivity and enabled faster feature development across multiple AI-driven products.
 - Developed a multi-threaded chat interface using React and Next.js to demonstrate Cleanlab's hallucination-detection system in real-time. Became a critical marketing tool used in every sales interaction, directly supporting revenue generation.
-- Architected front-end interfaces for AI-driven products, integrating REST APIs with React, Next.js, and Tailwind CSS. Implemented responsive layouts, optimized rendering for complex data visualizations, and improved performance through code splitting and lazy loading.
+- Architected frontend interfaces for AI-driven products, integrating REST APIs with React, Next.js, and Tailwind CSS. Implemented responsive layouts, optimized rendering for complex data visualizations, and improved performance through code splitting and lazy loading.
 - Collaborated with product and engineering teams to refine UI/UX strategies, translating design requirements into production-ready React components focused on user experience and maintainability.
 
 {% /stint %}
 
 {% stint
-  title="Front End Engineer"
+  title="Frontend Engineer"
   start="2022"
   end="2024"
   organization="Plural"
