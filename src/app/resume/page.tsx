@@ -9,6 +9,7 @@ import {
   createConfigWithFrontmatter,
   extractGithubUsername,
 } from "./utils";
+import Logo from "../components/Logo";
 
 // Component mapping for Markdoc
 const components = {
@@ -21,7 +22,10 @@ const components = {
 // Server component - no client-side rendering needed
 const Resume = () => {
   const { ast, frontmatter } = getResumeAstAndFrontmatter();
-  const configWithFrontmatter = createConfigWithFrontmatter(config, frontmatter);
+  const configWithFrontmatter = createConfigWithFrontmatter(
+    config,
+    frontmatter
+  );
   const content = Markdoc.transform(ast, configWithFrontmatter);
 
   // Render the entire content - Markdoc will handle the structure
@@ -33,6 +37,9 @@ const Resume = () => {
 
   const header = (
     <header>
+      <Logo
+        className={styles.printLogo}
+      />
       <h1>{frontmatter.name}</h1>
       <ul>
         <li>

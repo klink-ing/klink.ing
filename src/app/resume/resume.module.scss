@@ -5,7 +5,6 @@
 }
 
 .resume {
-  background-color: white;
   --resume-h-padding: calc(var(--v-space) * 1);
   --resume-t-padding: 60px;
   --resume-b-padding: 60px;
@@ -18,14 +17,6 @@
 
   --indent: calc(var(--v-space) * 1.5);
 
-  max-width: var(--max-width);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--resume-h-padding);
-  padding-right: var(--resume-h-padding);
-  padding-top: var(--resume-t-padding);
-  padding-bottom: var(--resume-b-padding);
-
   @media (width >= 375px) {
     --h2-size: calc(var(--font-body-size) * 2.5);
     --h3-size: calc(var(--font-body-size) * 1.7);
@@ -35,6 +26,38 @@
     --h2-size: calc(var(--font-body-size) * 3);
     --h3-size: calc(var(--font-body-size) * 1.8);
   }
+
+  @media (width >= 375px) {
+    --resume-h-padding: calc(var(--v-space) * 2);
+  }
+
+  @media (width >= 600px) {
+    --resume-h-padding: calc(var(--v-space) * 4);
+  }
+
+  @media print {
+    --font-body-size: 13px;
+    --h1-size: calc(var(--font-body-size) * 1);
+    --h2-size: calc(var(--font-body-size) * 1.5);
+    --h3-size: calc(var(--font-body-size) * 1.25);
+    --h4-size: 1em;
+    --resume-h-padding: 0;
+    --resume-t-padding: 0;
+    --resume-b-padding: 0;
+    --resume-t-padding: 0;
+    font-size: var(--font-body-size);
+    line-height: 1.4em;
+  }
+
+  background-color: white;
+
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--resume-h-padding);
+  padding-right: var(--resume-h-padding);
+  padding-top: var(--resume-t-padding);
+  padding-bottom: var(--resume-b-padding);
 
   ul {
     list-style: none;
@@ -107,8 +130,9 @@
     font-weight: 700;
   }
 
-  @media (width >= 375px) {
-    --resume-h-padding: calc(var(--v-space) * 2);
+  .stint {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
   .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
     margin-top: calc(var(--v-space) * 3);
@@ -122,8 +146,6 @@
     font-size: 16px;
   }
   @media (width >= 600px) {
-    --resume-h-padding: calc(var(--v-space) * 4);
-
     .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
       margin-top: calc(var(--v-space) * 4);
     }
@@ -168,7 +190,6 @@
       display: inline-flex;
       gap: 0.2em;
       margin-right: 0.2em;
-      // background-color: var(--color-fill);
       font-family: $fontCondensed;
       font-weight: 300;
       font-size: var(--small-size);
@@ -176,12 +197,8 @@
       line-height: var(--line-height);
       padding-right: 1em;
       padding-left: 1em;
-      // border: 1px solid var(--color-accent);
       border-radius: 100px;
       background-color: var(--color-accent-lightest);
-      // &:not(:last-child)::after {
-      //   content: ',';
-      // }
     }
   }
 
@@ -241,20 +258,55 @@
     text-decoration: none;
   }
 
+  .printLogo {
+    display: none;
+  }
+
   @media print {
-    --resume-h-padding: 0;
-    --resume-t-padding: 0;
-    --resume-b-padding: 0;
-    font-size: 14px;
-    line-height: 1.4em;
-    h2 {
-      font-size: 24px;
-    }
-    h3 {
-      font-size: 20px;
+    .printLogo {
+      display: block;
+      width: 1.5in;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
     .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
-      margin-top: 3em;
+      margin-top: 2em;
+    }
+    .bulletList {
+      margin-top: 1em;
+    }
+    h2 {
+      &:not(:first-of-type) {
+        margin-top: 2em;
+      }
+    }
+    ul ul {
+      display: none;
+    }
+    .skillsSection {
+      row-gap: 0.1em;
+    }
+    ul.compactList {
+      & > li {
+        font-family: #{$fontBody};
+        font-weight: 300;
+        line-height: 1.2em;
+        font-size: 1em;
+        margin-bottom: 0.1em;
+        border: 0.05em solid var(--color-accent-lighter);
+        background: none;
+        margin: 0;
+        padding: 0;
+        display: inline;
+        border: none;
+        &:not(:last-child)::after {
+          content: ", ";
+        }
+      }
+    }
+    a:any-link {
+      text-decoration: none;
     }
   }
 }
