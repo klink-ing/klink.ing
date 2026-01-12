@@ -145,7 +145,7 @@
       padding: 0;
       padding-left: calc(var(--indent) * 0.5);
       &:not(:last-child) {
-        margin-bottom: var(--v-space);
+        margin-bottom: 1em;
       }
       &::before {
         position: absolute;
@@ -173,7 +173,7 @@
       font-weight: 300;
       font-size: var(--small-size);
       height: var(--line-height);
-      line-height: calc(var(--line-height) * 1);
+      line-height: var(--line-height);
       padding-right: 1em;
       padding-left: 1em;
       // border: 1px solid var(--color-accent);
@@ -240,24 +240,21 @@
   .location {
     text-decoration: none;
   }
-}
 
-@media print {
-  .resume {
+  @media print {
     --resume-h-padding: 0;
     --resume-t-padding: 0;
     --resume-b-padding: 0;
+    font-size: 14px;
+    line-height: 1.4em;
     h2 {
-      font-size: 20px;
+      font-size: 24px;
     }
     h3 {
-      font-size: 18px;
+      font-size: 20px;
     }
-  }
-}
-
-:global {
-  body {
-    font-size: 8px;
+    .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
+      margin-top: 3em;
+    }
   }
 }
