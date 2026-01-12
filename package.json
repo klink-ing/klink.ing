@@ -18,18 +18,18 @@
     "js-yaml": "^4.1.1",
     "next": "16.1.1",
     "react": "^19.2.3",
-    "react-dom": "^19.2.1"
+    "react-dom": "^19.2.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@eslint/eslintrc": "^3.3.3",
     "@markdoc/markdoc": "^0.5.4",
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^20",
-    "@types/react": "^19.2.7",
+    "@types/node": "^25.0.6",
+    "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.8",
-    "sass": "^1.86.0",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "16.1.1",
+    "sass": "^1.97.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }

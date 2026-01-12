@@ -24,9 +24,11 @@ function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
         </>
       );
     }
-    console.log('child.type', child.type)
 
     if (child.type === 'h4') {
+      console.log('child.type', child.type)
+      console.log('child.props', child.props)
+
       return <>**{child.props?.children}**: </>
     }
 

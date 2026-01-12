@@ -247,5 +247,17 @@
     --resume-h-padding: 0;
     --resume-t-padding: 0;
     --resume-b-padding: 0;
+    h2 {
+      font-size: 20px;
+    }
+    h3 {
+      font-size: 18px;
+    }
+  }
+}
+
+:global {
+  body {
+    font-size: 8px;
   }
 }

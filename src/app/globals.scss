@@ -70,11 +70,18 @@ a:any-link {
   color: var(--color-link, inherit);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: .2em;
+  text-underline-offset: 0.2em;
 }
 
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
+}
+
+@page :first {
+  margin: 30px 60px 100px 60px;
+}
+@page {
+  margin-top: 100px;
 }
