@@ -263,6 +263,9 @@
   }
 
   @media print {
+    header {
+      margin-bottom: 2.5em;
+    }
     .printLogo {
       display: block;
       width: 1.5in;
@@ -271,14 +274,14 @@
       left: 0;
     }
     .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
-      margin-top: 2em;
+      margin-top: 2.5em;
     }
     .bulletList {
       margin-top: 1em;
     }
     h2 {
       &:not(:first-of-type) {
-        margin-top: 2em;
+        margin-top: 3em;
       }
     }
     ul ul {
