@@ -176,26 +176,9 @@ export const BulletList: React.FunctionComponent<{
 export const SkillsSection: React.FunctionComponent<{
   children?: React.ReactNode;
 }> = ({ children }) => {
-  // Process children to ensure all lists use compactList (same as SkillsList did)
+  // Process children to ensure all lists use compactList
   const processedChildren = processSkillsListChildren(children);
   return <div className={styles.skillsSection}>{processedChildren}</div>;
-};
-
-// SkillsList component - compact list styling for Skills section
-export const SkillsList: React.FunctionComponent<{
-  children?: React.ReactNode;
-  heading?: string;
-}> = ({ children, heading }) => {
-  // Process children to ensure all lists use compactList
-  // The markdown already creates a <ul> from list items, so we just process children
-  const processedChildren = processSkillsListChildren(children);
-
-  return (
-    <div className={styles.skillsListItem}>
-      {heading && <h4>{heading}</h4>}
-      {processedChildren}
-    </div>
-  );
 };
 
 // List component - handles regular markdown lists

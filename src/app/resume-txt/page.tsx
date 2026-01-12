@@ -6,7 +6,6 @@ import { Stint, BulletList, List, SkillsSection } from "./markdoc-components";
 import {
   getResumeAstAndFrontmatter,
   createConfigWithFrontmatter,
-  extractGithubUsername,
 } from "../resume/utils";
 
 // Component mapping for Markdoc
@@ -18,28 +17,36 @@ const components = {
   Heading: (
     props: React.HTMLAttributes<HTMLHeadingElement> & { level: number }
   ) => {
-    if (props.level <= 3) {
+    if (props.level === 3) {
       return <>{props.children?.toString().toUpperCase() + "\n\n"}</>;
     }
-    <>
-      {props.children}
-      {"\n\n"}
-    </>;
+    if (props.level === 2) {
+      return (
+        <>
+          {"\n\n\n"}--- {props.children?.toString().toUpperCase()} ---{"\n\n\n"}
+        </>
+      );
+    }
+    return (
+      <>
+        {props.children}
+        {"\n\n"}
+      </>
+    );
   },
 };
 
 // Server component - no client-side rendering needed
 const Resume = () => {
   const { ast, frontmatter } = getResumeAstAndFrontmatter(false);
-  const configWithFrontmatter = createConfigWithFrontmatter(config, frontmatter);
+  const configWithFrontmatter = createConfigWithFrontmatter(
+    config,
+    frontmatter
+  );
   const content = Markdoc.transform(ast, configWithFrontmatter);
 
   // Render the entire content - Markdoc will handle the structure
   const rendered = Markdoc.renderers.react(content, React, { components });
-
-  // Create header from frontmatter
-  // Extract GitHub username from URL
-  const githubUsername = extractGithubUsername(frontmatter.github);
 
   const header = (
     <>
@@ -48,7 +55,8 @@ const Resume = () => {
         {"\n"}
       </>
       <>
-        {githubUsername}@github ({frontmatter.github}){"\n"}
+        {frontmatter.github}
+        {"\n"}
       </>
       <>
         {frontmatter.email} ({frontmatter.email}){"\n"}

@@ -1,0 +1,3 @@
+# Minimum release age in minutes (1440 = 24 hours)
+# Packages must be published for at least this duration before pnpm will install them
+minimumReleaseAge: 1440

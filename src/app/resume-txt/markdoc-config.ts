@@ -1,36 +1,12 @@
 import { Config } from "@markdoc/markdoc";
+import { baseConfig } from "../resume/markdoc-config-base";
 
 // Markdoc configuration for custom tags and nodes
+// Extends base config with heading node for text output
 export const config: Config = {
-  tags: {
-    stint: {
-      render: "Stint",
-      attributes: {
-        title: { type: String, required: true },
-        start: { type: String },
-        end: { type: String },
-        location: { type: String, required: true },
-        organization: { type: String, required: true },
-        url: { type: String },
-        pageBreak: { type: Boolean },
-      },
-    },
-    bulletList: {
-      render: "BulletList",
-      attributes: {},
-    },
-    skillsSection: {
-      render: "SkillsSection",
-      attributes: {},
-    },
-  },
+  ...baseConfig,
   nodes: {
-    list: {
-      render: "List",
-      attributes: {
-        ordered: { type: Boolean },
-      },
-    },
+    ...baseConfig.nodes,
     heading: {
       render: "Heading",
       attributes: {

@@ -24,6 +24,11 @@ function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
         </>
       );
     }
+    console.log('child.type', child.type)
+
+    if (child.type === 'h4') {
+      return <>**{child.props?.children}**: </>
+    }
 
     // Recursively process children if element has children prop
     const childProps = child.props as { children?: React.ReactNode } & Record<
@@ -201,7 +206,6 @@ export const Stint: React.FunctionComponent<{
       <>
         <>{formattedTitle}</>
         <>
-          {" "}
           {start}
           {start && end && <> – </>}
           {end}
@@ -209,14 +213,9 @@ export const Stint: React.FunctionComponent<{
         </>
       </>
       <>
-        {" "}
         {organization}
         {url && <> ({url})</>}
-        {"\n"}
-      </>
-      <>
-        {" "}
-        {location}
+        {location && <> - {location}</>}
         {"\n"}
       </>
       {children ? (
