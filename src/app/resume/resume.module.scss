@@ -57,6 +57,13 @@
     text-align: right;
     text-align: end;
     margin-bottom: calc(var(--v-space) * 2);
+    font-family: #{$fontRegular};
+    font-weight: 300;
+    h1 {
+      font-size: var(--h1-size);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
   }
 
   section {
@@ -69,15 +76,12 @@
   h4,
   h5,
   h6 {
+    font-family: #{$fontRegular};
+    font-weight: 300;
     line-height: 1.1em;
     margin: 0;
   }
 
-  h1 {
-    font-size: var(--h1-size);
-    text-transform: uppercase;
-    font-weight: 900;
-  }
   h2 {
     font-size: var(--h2-size);
     color: var(--color-accent);
@@ -96,8 +100,6 @@
     font-weight: $fontWeightHeavy;
     margin: 0;
   }
-  // --font-name: #{$fontCondensed};
-  // --font-body-size: 4px;
 
   h4 {
     font-family: $fontCondensed;
@@ -113,6 +115,11 @@
   }
   .stint.noChildren + .stint {
     margin-top: var(--v-space);
+  }
+  .topLine {
+    font-family: #{$fontRegular};
+    font-weight: 400;
+    font-size: 16px;
   }
   @media (width >= 600px) {
     --resume-h-padding: calc(var(--v-space) * 4);
@@ -195,13 +202,14 @@
     }
   }
 
-  .organization {
-    // font-style: italic;
-    font-weight: 600;
+  .organization,
+  .location {
+    font-family: #{$fontRegular};
+    font-weight: 400;
+    font-size: 16px;
     display: inline;
   }
-  .location,
-  .schoolLocation {
+  .location {
     display: inline;
     &:before {
       content: " – ";
@@ -230,9 +238,6 @@
     text-decoration: none;
   }
   .location {
-    text-decoration: none;
-  }
-  .schoolLocation {
     text-decoration: none;
   }
 }

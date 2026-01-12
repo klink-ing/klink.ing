@@ -17,7 +17,8 @@
   }
 
   nav ul {
-    --font-name: #{$fontRegular};
+    font-family: #{$fontRegular};
+    font-weight: 300;
     margin: 0;
     padding: 0;
     margin-top: 3em;

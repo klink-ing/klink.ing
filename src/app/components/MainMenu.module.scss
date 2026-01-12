@@ -18,21 +18,30 @@
     width: 50%;
     max-width: 180px;
     svg {
-        margin-bottom: -12.2%;
-        margin-top: -4.75%;
+      margin-bottom: -12.2%;
+      margin-top: -4.75%;
     }
   }
-  & > *:not(:first-child) {
+  & > * {
     text-transform: uppercase;
     display: inline-block;
-    --font-name: #{$fontRegular};
+    font-family: #{$fontRegular};
     font-weight: #{$fontWeightHeavy};
     letter-spacing: 0.1em;
-    :any-link {
+    &:any-link {
       text-decoration: none;
-      &:hover {
-        text-decoration: underline;
-      }
     }
+  }
+  // Add underline hover effect for all links except home logo
+  & > *:not(:first-child) {
+    &:any-link:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+@media print {
+  .menu {
+    display: none !important;
   }
 }

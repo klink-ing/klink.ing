@@ -31,5 +31,11 @@ export const config: Config = {
         ordered: { type: Boolean },
       },
     },
+    heading: {
+      render: "Heading",
+      attributes: {
+        level: { type: Number, required: true },
+      },
+    },
   },
 };

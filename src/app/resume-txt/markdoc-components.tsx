@@ -1,5 +1,4 @@
 import * as React from "react";
-import styles from "./resume.module.scss";
 
 // Helper function to process children and ensure lists use compactList
 function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
@@ -216,7 +215,9 @@ export const Stint: React.FunctionComponent<{
         {"\n"}
       </>
       <>
-        {" "}{location}{"\n"}
+        {" "}
+        {location}
+        {"\n"}
       </>
       {children ? (
         <>
