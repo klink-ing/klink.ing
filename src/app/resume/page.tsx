@@ -3,7 +3,7 @@ import Markdoc from "@markdoc/markdoc";
 import { Metadata } from "next/types";
 import styles from "./resume.module.scss";
 import { config } from "./markdoc-config";
-import { Stint, BulletList, List, SkillsSection } from "./markdoc-components";
+import { Stint, List, SkillsSection } from "./markdoc-components";
 import {
   getResumeAstAndFrontmatter,
   createConfigWithFrontmatter,
@@ -14,7 +14,6 @@ import Logo from "../components/Logo";
 // Component mapping for Markdoc
 const components = {
   Stint,
-  BulletList,
   SkillsSection,
   List,
 };
@@ -37,9 +36,7 @@ const Resume = () => {
 
   const header = (
     <header>
-      <Logo
-        className={styles.printLogo}
-      />
+      <Logo className={styles.printLogo} />
       <h1>{frontmatter.name}</h1>
       <ul>
         <li>

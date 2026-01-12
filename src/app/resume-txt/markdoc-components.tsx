@@ -28,7 +28,9 @@ function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
     if (child.type === List) {
       return (
         <>
-          {processSkillsListChildren((child.props as { children?: React.ReactNode })?.children)}
+          {processSkillsListChildren(
+            (child.props as { children?: React.ReactNode })?.children
+          )}
           {"\n\n"}
         </>
       );
@@ -233,15 +235,6 @@ export const Stint: React.FunctionComponent<{
       )}
     </>
   );
-};
-
-// BulletList component - default list styling
-// Nested lists use compactList
-export const BulletList: React.FunctionComponent<{
-  children?: React.ReactNode;
-}> = ({ children }) => {
-  const processedChildren = processNestedLists(children);
-  return <>{processedChildren}</>;
 };
 
 // SkillsSection component - grid container for skills lists

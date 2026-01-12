@@ -3,7 +3,6 @@ import Markdoc from "@markdoc/markdoc";
 import { Metadata } from "next/types";
 import { config } from "./markdoc-config";
 import {
-  BulletList,
   Heading,
   List,
   SkillsSection,
@@ -17,7 +16,7 @@ import {
 // Component mapping for Markdoc
 const components = {
   Stint,
-  BulletList,
+  
   SkillsSection,
   List,
   Heading,
