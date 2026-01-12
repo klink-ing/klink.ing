@@ -25,11 +25,13 @@ function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
       );
     }
 
-    if (child.type === 'h4') {
-      console.log('child.type', child.type)
-      console.log('child.props', child.props)
-
-      return <>**{child.props?.children}**: </>
+    if (child.type === List) {
+      return (
+        <>
+          {processSkillsListChildren((child.props as { children?: React.ReactNode })?.children)}
+          {"\n\n"}
+        </>
+      );
     }
 
     // Recursively process children if element has children prop
@@ -260,4 +262,29 @@ export const List: React.FunctionComponent<{
   // Process children to apply compactList to nested lists
   const processedChildren = processNestedLists(children);
   return <>{processedChildren}</>;
+};
+
+export const Heading: React.FunctionComponent<{
+  level: number;
+  children?: React.ReactNode;
+}> = ({ level, children }) => {
+  if (level === 4) {
+    return <>{children?.toString().toUpperCase()}: </>;
+  }
+  if (level === 3) {
+    return <>{children?.toString().toUpperCase() + "\n\n"}</>;
+  }
+  if (level === 2) {
+    return (
+      <>
+        {"\n\n\n"}--- {children?.toString().toUpperCase()} ---{"\n\n\n"}
+      </>
+    );
+  }
+  return (
+    <>
+      {children}
+      {"\n\n"}
+    </>
+  );
 };

@@ -2,7 +2,13 @@ import * as React from "react";
 import Markdoc from "@markdoc/markdoc";
 import { Metadata } from "next/types";
 import { config } from "./markdoc-config";
-import { Stint, BulletList, List, SkillsSection } from "./markdoc-components";
+import {
+  BulletList,
+  Heading,
+  List,
+  SkillsSection,
+  Stint,
+} from "./markdoc-components";
 import {
   getResumeAstAndFrontmatter,
   createConfigWithFrontmatter,
@@ -14,26 +20,7 @@ const components = {
   BulletList,
   SkillsSection,
   List,
-  Heading: (
-    props: React.HTMLAttributes<HTMLHeadingElement> & { level: number }
-  ) => {
-    if (props.level === 3) {
-      return <>{props.children?.toString().toUpperCase() + "\n\n"}</>;
-    }
-    if (props.level === 2) {
-      return (
-        <>
-          {"\n\n\n"}--- {props.children?.toString().toUpperCase()} ---{"\n\n\n"}
-        </>
-      );
-    }
-    return (
-      <>
-        {props.children}
-        {"\n\n"}
-      </>
-    );
-  },
+  Heading,
 };
 
 // Server component - no client-side rendering needed
