@@ -2,12 +2,7 @@ import * as React from "react";
 import Markdoc from "@markdoc/markdoc";
 import { Metadata } from "next/types";
 import { config } from "./markdoc-config";
-import {
-  Heading,
-  List,
-  SkillsSection,
-  Stint,
-} from "./markdoc-components";
+import { Heading, List, SkillsSection, Stint } from "./markdoc-components";
 import {
   getResumeAstAndFrontmatter,
   createConfigWithFrontmatter,
@@ -16,7 +11,6 @@ import {
 // Component mapping for Markdoc
 const components = {
   Stint,
-  
   SkillsSection,
   List,
   Heading,
@@ -45,7 +39,8 @@ const Resume = () => {
         {"\n"}
       </>
       <>
-        {frontmatter.email} ({frontmatter.email}){"\n"}
+        {frontmatter.email}
+        {"\n"}
       </>
     </>
   );

@@ -60,8 +60,8 @@ email: chris@klink.ink
   title="Senior Interactive Designer"
   start="2008"
   end="2015"
-  organization="FCB"
-  url="https://www.fcb.com/"
+  organization="FCB (Now Omnicom)"
+  url="https://www.omc.com/"
   location="Seattle, WA + San Francisco, CA"
 %}
 
