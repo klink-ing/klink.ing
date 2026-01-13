@@ -55,7 +55,7 @@ const Resume = () => {
 
 export const metadata: Metadata = {
   title: "Klink - Resumé",
-  description: "What's Klink been up to?",
+  description: "What’s Klink been up to?",
 };
 
 export default Resume;
