@@ -2,7 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import Markdoc from "@markdoc/markdoc";
 import yaml from "js-yaml";
-import { Config } from "@markdoc/markdoc";
+import { Config, type Node} from "@markdoc/markdoc";
 
 export interface Frontmatter {
   name: string;
@@ -16,7 +16,7 @@ export function getResumeContent(): string {
 }
 
 export function parseResumeFrontmatter(
-  ast: Markdoc.Ast.Node
+  ast: Node
 ): Frontmatter | null {
   if (!ast.attributes.frontmatter) {
     return null;
@@ -48,7 +48,7 @@ export function extractGithubUsername(githubUrl: string): string {
 export function getResumeAstAndFrontmatter(
   requireAllFields = true
 ): {
-  ast: Markdoc.Ast.Node;
+  ast: Node;
   frontmatter: Frontmatter;
 } {
   const fileContent = getResumeContent();

@@ -11,6 +11,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "type-check": "tsc --noEmit",
     "generate-resume": "tsx scripts/generate-resume.ts"
   },
   "dependencies": {

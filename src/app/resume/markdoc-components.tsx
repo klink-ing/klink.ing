@@ -76,7 +76,7 @@ export const SkillsSection: React.FunctionComponent<{
 // Uses compactList if within a skillsSection, otherwise uses bulletList
 export const List: React.FunctionComponent<{
   ordered?: boolean;
-  listType?: "bullet" | "m";
+  listType?: "bullet" | "compact";
   children?: React.ReactNode;
   parentTags?: string;
 }> = ({ children, listType = "bullet", ordered = false, ...rest }) => {
