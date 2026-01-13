@@ -1,26 +1,24 @@
 import * as React from "react";
 import Markdoc from "@markdoc/markdoc";
 import { Metadata } from "next/types";
-import styles from "./resume.module.scss";
 import { config } from "./markdoc-config";
-import { Stint, List, SkillsSection } from "./markdoc-components";
+import { Heading, List, SkillsSection, Stint } from "./markdoc-components";
 import {
   getResumeAstAndFrontmatter,
   createConfigWithFrontmatter,
-  extractGithubUsername,
-} from "./utils";
-import Logo from "../components/Logo";
+} from "../resume/utils";
 
 // Component mapping for Markdoc
 const components = {
   Stint,
   SkillsSection,
   List,
+  Heading,
 };
 
 // Server component - no client-side rendering needed
 const Resume = () => {
-  const { ast, frontmatter } = getResumeAstAndFrontmatter();
+  const { ast, frontmatter } = getResumeAstAndFrontmatter(false);
   const configWithFrontmatter = createConfigWithFrontmatter(
     config,
     frontmatter
@@ -30,29 +28,25 @@ const Resume = () => {
   // Render the entire content - Markdoc will handle the structure
   const rendered = Markdoc.renderers.react(content, React, { components });
 
-  // Create header from frontmatter
-  // Extract GitHub username from URL
-  const githubUsername = extractGithubUsername(frontmatter.github);
-
   const header = (
-    <header>
-      <Logo className={styles.printLogo} />
-      <h1>{frontmatter.name}</h1>
-      <ul>
-        <li>
-          <a target="_blank" href={frontmatter.github}>
-            {githubUsername}@github
-          </a>
-        </li>
-        <li>
-          <a href={`mailto:${frontmatter.email}`}>{frontmatter.email}</a>
-        </li>
-      </ul>
-    </header>
+    <>
+      <>
+        {frontmatter.name}
+        {"\n"}
+      </>
+      <>
+        {frontmatter.github}
+        {"\n"}
+      </>
+      <>
+        {frontmatter.email}
+        {"\n"}
+      </>
+    </>
   );
 
   return (
-    <article className={styles.resume}>
+    <article>
       {header}
       {rendered}
     </article>
