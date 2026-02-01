@@ -105,6 +105,8 @@ email: chris@klink.ink
 - GraphQL
 - Vite
 - Sass
+- GSAP
+- Motion
 
 #### Design Tools
 
