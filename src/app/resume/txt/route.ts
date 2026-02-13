@@ -94,10 +94,11 @@ export async function GET() {
 	// 4. Extract text from React elements
 	const body = extractTextFromReactNode(rendered);
 
-	// 5. Return as plain text
+	// 5. Return as plain text with suggested filename
 	return new Response(header + body, {
 		headers: {
 			"Content-Type": "text/plain; charset=UTF-8",
+			"Content-Disposition": 'inline; filename="chris-klink-resume.txt"',
 		},
 	});
 }
