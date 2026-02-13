@@ -20,47 +20,70 @@ const components = {
 };
 
 /**
- * Recursively extracts text content from a React node by executing components.
+ * Extracts text content from a React node by executing components.
+ * Uses iterative approach with explicit stack to avoid call-stack overflow.
+ * Accumulates text in an array (mutable buffer) for efficient concatenation.
  * Handles React elements, fragments, strings, numbers, and arrays.
  */
 function extractTextFromReactNode(node: React.ReactNode): string {
-  if (typeof node === "string") {
-    return node;
-  }
-  if (typeof node === "number") {
-    return String(node);
-  }
-  if (node === null || node === undefined || typeof node === "boolean") {
-    return "";
-  }
-  if (Array.isArray(node)) {
-    return node.map(extractTextFromReactNode).join("");
-  }
-  if (React.isValidElement(node)) {
-    const element = node as React.ReactElement;
+  const buffer: string[] = [];
+  const stack: React.ReactNode[] = [node];
 
-    // If the element type is a function (component), execute it
-    if (typeof element.type === "function") {
-      // Cast to function component type since our components are all functional
-      const Component = element.type as (props: any) => React.ReactNode;
-      const result = Component(element.props);
-      return extractTextFromReactNode(result);
+  while (stack.length > 0) {
+    const current = stack.pop();
+
+    // Handle primitives
+    if (typeof current === "string") {
+      buffer.push(current);
+      continue;
+    }
+    if (typeof current === "number") {
+      buffer.push(String(current));
+      continue;
+    }
+    if (current === null || current === undefined || typeof current === "boolean") {
+      continue;
     }
 
-    // Otherwise, just extract children from props
-    const props = element.props as { children?: React.ReactNode };
-    return extractTextFromReactNode(props.children);
+    // Handle arrays - push items in reverse order to maintain order
+    if (Array.isArray(current)) {
+      for (let i = current.length - 1; i >= 0; i--) {
+        stack.push(current[i]);
+      }
+      continue;
+    }
+
+    // Handle React elements
+    if (React.isValidElement(current)) {
+      const element = current as React.ReactElement;
+
+      // If the element type is a function (component), execute it
+      if (typeof element.type === "function") {
+        // Cast to function component type since our components are all functional
+        const Component = element.type as (props: any) => React.ReactNode;
+        const componentResult = Component(element.props);
+        stack.push(componentResult);
+        continue;
+      }
+
+      // Otherwise, extract children from props
+      const props = element.props as { children?: React.ReactNode };
+      if (props.children) {
+        stack.push(props.children);
+      }
+    }
   }
-  return "";
+
+  return buffer.join("");
 }
 
 export async function GET() {
-  // 1. Parse and transform Markdoc (same as current page.tsx)
+  // 1. Parse and transform Markdoc
   const { ast, frontmatter } = getResumeAstAndFrontmatter(false);
   const configWithFrontmatter = createConfigWithFrontmatter(config, frontmatter);
   const transformed = Markdoc.transform(ast, configWithFrontmatter);
 
-  // 2. Render with React (same as current page.tsx)
+  // 2. Render with React
   const rendered = Markdoc.renderers.react(transformed, React, { components });
 
   // 3. Generate header from frontmatter
