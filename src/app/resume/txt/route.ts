@@ -98,7 +98,7 @@ export async function GET() {
 	return new Response(header + body, {
 		headers: {
 			"Content-Type": "text/plain; charset=UTF-8",
-			"Content-Disposition": 'inline; filename="chris-klink-resume.txt"',
+			"Content-Disposition": 'attachment; filename="chris-klink-resume.txt"',
 		},
 	});
 }
