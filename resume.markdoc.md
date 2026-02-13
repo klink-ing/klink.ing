@@ -9,7 +9,7 @@ email: chris@klink.ink
 {% stint
   title="Senior Frontend Engineer"
   start="2024"
-  end="Present"
+  end="Jan. 2026"
   organization="Cleanlab"
   url="https://cleanlab.ai"
   location="San Francisco, CA"
