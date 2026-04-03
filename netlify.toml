@@ -1,0 +1,75 @@
+[build]
+  command = "pnpm build"
+  publish = ".next"
+
+# Redirect www to apex domain
+[[redirects]]
+  from = "https://www.klink.ing/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+# klinkmade.com
+[[redirects]]
+  from = "https://klinkmade.com/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.klinkmade.com/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+# chrisklink.com
+[[redirects]]
+  from = "https://chrisklink.com/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.chrisklink.com/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+# chrisklink.net
+[[redirects]]
+  from = "https://chrisklink.net/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.chrisklink.net/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+# chrisklink.org
+[[redirects]]
+  from = "https://chrisklink.org/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.chrisklink.org/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+# klink.ink
+[[redirects]]
+  from = "https://klink.ink/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.klink.ink/*"
+  to = "https://klink.ing/:splat"
+  status = 301
+  force = true
