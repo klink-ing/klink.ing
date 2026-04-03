@@ -94,8 +94,9 @@ export async function GET() {
 	// 4. Extract text from React elements
 	const body = extractTextFromReactNode(rendered);
 
-	// 5. Return as plain text with suggested filename
-	return new Response(header + body, {
+	// 5. Return as plain text with suggested filename (trim whitespace)
+	const content = (header + body).trim();
+	return new Response(content, {
 		headers: {
 			"Content-Type": "text/plain; charset=UTF-8",
 			"Content-Disposition": 'attachment; filename="chris-klink-resume.txt"',
