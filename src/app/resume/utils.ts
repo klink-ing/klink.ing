@@ -10,7 +10,7 @@ export interface Frontmatter {
 }
 
 export function getResumeContent(): string {
-  const filePath = path.join(process.cwd(), "resume.markdoc.md");
+  const filePath = path.join(process.cwd(), "src/content/resume/resume.mdoc");
   return fs.readFileSync(filePath, "utf-8");
 }
 
