@@ -1,5 +1,5 @@
 // src/lib/resume/render-text.ts
-import { type RenderableTreeNode, Tag } from "@markdoc/markdoc";
+import Markdoc, { type RenderableTreeNode, type Tag } from "@markdoc/markdoc";
 
 export type TextRender = (node: RenderableTreeNode | RenderableTreeNode[]) => string;
 
@@ -29,7 +29,7 @@ function decorateLis(node: RenderableTreeNode): RenderableTreeNode {
     const newChildren = node.children.map((c) => {
       if (isTag(c) && c.name === "li") {
         index++;
-        return new Tag(
+        return new Markdoc.Tag(
           "li",
           {
             ...c.attributes,
@@ -43,9 +43,9 @@ function decorateLis(node: RenderableTreeNode): RenderableTreeNode {
       }
       return decorateLis(c);
     });
-    return new Tag(node.name, node.attributes, newChildren as RenderableTreeNode[]);
+    return new Markdoc.Tag(node.name, node.attributes, newChildren as RenderableTreeNode[]);
   }
-  return new Tag(
+  return new Markdoc.Tag(
     node.name,
     node.attributes,
     node.children.map(decorateLis) as RenderableTreeNode[],
