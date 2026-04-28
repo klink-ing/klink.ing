@@ -18,9 +18,6 @@ importers:
 
   .:
     dependencies:
-      include-media:
-        specifier: ^2.0.0
-        version: 2.0.0
       js-yaml:
         specifier: ^4.1.1
         version: 4.1.1
@@ -49,9 +46,6 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.3
         version: 19.2.3(@types/react@19.2.8)
-      sass:
-        specifier: ^1.97.2
-        version: 1.97.2
       tsx:
         specifier: ^4.21.0
         version: 4.21.0
@@ -1168,9 +1162,6 @@ packages:
   immutable@5.1.4:
     resolution: {integrity: sha512-p6u1bG3YSnINT5RQmx/yRZBpenIl30kVxkTLDyHLIMk0gict704Q9n+thfDI7lTRm9vXdDYutVzXhzcThxTnXA==}
 
-  include-media@2.0.0:
-    resolution: {integrity: sha512-LSJcffPYIZ/Kln0rIi5UhqQbZxElDCMYA4dPC5MI1rkwwjptgEiOicHnzB0MMhMNJver0+4zULb4MKlgDyapZg==}
-
   is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
@@ -1314,10 +1305,6 @@ packages:
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
-
-  picomatch@4.0.3:
-    resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
-    engines: {node: '>=12'}
 
   picomatch@4.0.4:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
@@ -1916,7 +1903,7 @@ snapshots:
       detect-libc: 2.1.2
       is-glob: 4.0.3
       node-addon-api: 7.1.1
-      picomatch: 4.0.3
+      picomatch: 4.0.4
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.5.4
       '@parcel/watcher-darwin-arm64': 2.5.4
@@ -2118,6 +2105,7 @@ snapshots:
   chokidar@4.0.3:
     dependencies:
       readdirp: 4.1.2
+    optional: true
 
   client-only@0.0.1: {}
 
@@ -2167,9 +2155,8 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
-  immutable@5.1.4: {}
-
-  include-media@2.0.0: {}
+  immutable@5.1.4:
+    optional: true
 
   is-extglob@2.1.1:
     optional: true
@@ -2324,9 +2311,6 @@ snapshots:
 
   picocolors@1.1.1: {}
 
-  picomatch@4.0.3:
-    optional: true
-
   picomatch@4.0.4: {}
 
   pixelmatch@7.1.0:
@@ -2354,7 +2338,8 @@ snapshots:
 
   react@19.2.3: {}
 
-  readdirp@4.1.2: {}
+  readdirp@4.1.2:
+    optional: true
 
   resolve-pkg-maps@1.0.0: {}
 
@@ -2386,6 +2371,7 @@ snapshots:
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.4
+    optional: true
 
   scheduler@0.27.0: {}
 

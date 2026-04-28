@@ -1,5 +1,5 @@
 import * as React from "react";
-import styles from "./resume.module.scss";
+import styles from "./resume.module.css";
 
 // Stint component for job/education entries
 export const Stint: React.FunctionComponent<{

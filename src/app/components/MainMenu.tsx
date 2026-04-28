@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Logo from "./Logo";
-import styles from "./MainMenu.module.scss";
+import styles from "./MainMenu.module.css";
 
 const MainMenu = () => (
   <nav className={styles.menu}>

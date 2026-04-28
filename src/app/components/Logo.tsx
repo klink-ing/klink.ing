@@ -1,5 +1,5 @@
 import type * as React from "react";
-import styles from "./Logo.module.scss";
+import styles from "./Logo.module.css";
 
 const Logo: React.FunctionComponent<React.SVGAttributes<SVGElement>> = (props) => (
   <svg
