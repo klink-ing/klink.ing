@@ -2,9 +2,15 @@
 
 $backupFonts: "-apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif";
 
-$fontCondensed: "korolev-condensed", #{$backupFonts};
-$fontRegular: "sweet-sans-pro", #{$backupFonts};
-$fontBody: "circe", #{$backupFonts};
+$fontCondensed:
+  "korolev-condensed",
+  #{$backupFonts};
+$fontRegular:
+  "sweet-sans-pro",
+  #{$backupFonts};
+$fontBody:
+  "circe",
+  #{$backupFonts};
 $fontWeightHeavy: 700;
 $fontWeightBold: 500;
 $fontWeightRegular: 500;

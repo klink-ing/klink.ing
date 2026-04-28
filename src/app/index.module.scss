@@ -1,4 +1,4 @@
-@import '../styles/vars.scss';
+@import "../styles/vars.scss";
 
 .splash {
   display: table;
@@ -36,7 +36,7 @@
 
     &::before,
     &::after {
-      content: ' ';
+      content: " ";
       display: block;
       margin-left: 1em;
       margin-right: 1em;
