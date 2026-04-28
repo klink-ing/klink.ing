@@ -1,6 +1,12 @@
 [build]
-command = "pnpm build"
-publish = ".next"
+command = "vp run build"
+publish = "dist"
+
+[[headers]]
+for = "/resume/txt"
+[headers.values]
+Content-Type = "text/plain; charset=UTF-8"
+Content-Disposition = 'attachment; filename="chris-klink-resume.txt"'
 
 # Redirect www to apex domain
 [[redirects]]
