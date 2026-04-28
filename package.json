@@ -3,24 +3,19 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
     "prepare": "vp config"
   },
   "dependencies": {
     "@astrojs/markdoc": "^1.0.4",
     "@markdoc/markdoc": "^0.5.7",
-    "astro": "^6.1.9",
-    "next": "16.1.1",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+    "astro": "^6.1.9"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.0.6",
-    "@types/react": "^19.2.8",
-    "@types/react-dom": "^19.2.3",
     "js-yaml": "^4.1.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
