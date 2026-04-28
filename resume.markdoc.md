@@ -1,7 +1,7 @@
 ---
 name: Chris Klink
 github: https://github.com/dogmar/
-email: chris@klink.ink
+email: chris@klink.ing
 ---
 
 {% intro %}
