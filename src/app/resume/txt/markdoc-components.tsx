@@ -2,7 +2,7 @@ import * as React from "react";
 
 export const Intro = ({
   children,
-  className,
+  className: _className,
 }: {
   children?: React.ReactNode;
   className?: string;
