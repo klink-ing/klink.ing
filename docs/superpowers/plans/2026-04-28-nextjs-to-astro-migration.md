@@ -447,33 +447,37 @@ vp remove js-yaml
 vp add -D js-yaml
 ```
 
-- [ ] **Step 3: Run the test — expect failure due to missing modules**
+- [ ] **Step 3: Add a Vitest config that picks up Astro's path aliases**
+
+Vitest does not read `tsconfig.json` `paths` by default. Astro provides a `getViteConfig` helper that returns the project's full Vite config (including the path-alias resolution Astro itself uses). Create `vitest.config.ts`:
+
+```ts
+// vitest.config.ts
+import { getViteConfig } from "astro/config";
+
+export default getViteConfig({
+  test: {
+    include: ["tests/**/*.test.ts"],
+  },
+});
+```
+
+This ensures `@/*` resolves to `src/*` in tests exactly as it does in `.astro` files. (Astro reads `tsconfig.json` `paths` and translates them into Vite aliases.)
+
+- [ ] **Step 4: Run the test — expect failure due to missing modules**
 
 ```bash
 vp test tests/resume-txt.test.ts
 ```
 
-Expected: FAIL with "Cannot find module '@/lib/resume/render-text'" or "Cannot find module '@/lib/resume/text-components'". This proves the test is being discovered.
+Expected: FAIL with "Cannot find module '@/lib/resume/render-text'" or "Cannot find module '@/lib/resume/text-components'". This proves the test is being discovered AND the path alias resolves (otherwise the failure would be about `@/...` itself, not about the named export).
 
-- [ ] **Step 4: If `vp test` fails to even discover the test (e.g., no test runner configured), add a minimal `vitest` config**
-
-Only if needed. Create `vitest.config.ts`:
-
-```ts
-import { defineConfig } from "vite-plus";
-
-export default defineConfig({
-  resolve: { alias: { "@": new URL("./src/", import.meta.url).pathname } },
-});
-```
-
-Re-run `vp test`.
+If you instead see "Cannot find package '@/...'" or similar, the alias isn't resolving. Double-check `tsconfig.json` has the `paths` entry from Task 21 — it must be present. (If `tsconfig.json` hasn't been updated yet at this point in the migration, temporarily add `"paths": { "@/*": ["./src/*"] }` and `"baseUrl": "."` to the existing `tsconfig.json`; Task 21 will tidy this up.)
 
 - [ ] **Step 5: Commit (failing test is deliberate scaffolding)**
 
 ```bash
-git add tests/resume-txt.test.ts package.json pnpm-lock.yaml
-[ -f vitest.config.ts ] && git add vitest.config.ts
+git add tests/resume-txt.test.ts vitest.config.ts package.json pnpm-lock.yaml
 git commit -m "Add failing snapshot test for TXT resume migration"
 ```
 
@@ -876,8 +880,12 @@ const Tag = ordered ? "ol" : "ul";
 
 - [ ] **Step 6: `Stint.astro`** (with the three preserved behaviors from the spec)
 
+**Important: use `<Fragment>` from `astro/components`, not the JSX `<>...</>` shorthand.** Astro does not support the shorthand fragment syntax — it will fail to compile.
+
 ```astro
 ---
+import { Fragment } from "astro/components";
+
 import styles from "@/styles/resume.module.css";
 
 interface Props {
@@ -900,30 +908,26 @@ const titleBefore = inIndex >= 0 ? title.slice(0, inIndex) : null;
 const titleAfter = inIndex >= 0 ? title.slice(inIndex + " in ".length) : null;
 
 const hasChildren = Astro.slots.has("default");
-const stintClassName = [
-  styles.stint,
-  hasChildren ? null : styles.noChildren,
-  className,
-].filter(Boolean).join(" ");
+const stintClassName = [styles.stint, hasChildren ? null : styles.noChildren, className]
+  .filter(Boolean)
+  .join(" ");
 
-// No-break date ranges: \d+–\d+ in either start or end stays on one line.
-// Single tokens like "2024" or "2024–2026" are short enough that the regex
-// only matches the en-dash range form anyway.
-const wrapNoBreak = (s: string | undefined): string | null => s ?? null;
+// No-break date ranges: only the \d+–\d+ pattern needs the noBreak class.
+const isRange = (s: string | undefined) => !!s && /^\d+–\d+$/.test(s);
 ---
 <div class={stintClassName}>
   <div class={styles.topLine}>
     <h3 class={styles.jobTitle}>
       {titleBefore !== null && titleAfter !== null ? (
-        <>{titleBefore} in <span style="white-space: nowrap">{titleAfter}</span></>
+        <Fragment>{titleBefore} in <span style="white-space: nowrap">{titleAfter}</span></Fragment>
       ) : (
         title
       )}
     </h3>
     <div style="white-space: nowrap" class={styles.dates}>
-      {start && <span class={/^\d+–\d+$/.test(start) ? styles.noBreak : ""}>{wrapNoBreak(start)}</span>}
-      {start && end && <> – </>}
-      {end && <span class={/^\d+–\d+$/.test(end) ? styles.noBreak : ""}>{wrapNoBreak(end)}</span>}
+      {start && <span class={isRange(start) ? styles.noBreak : ""}>{start}</span>}
+      {start && end && <Fragment> – </Fragment>}
+      {end && <span class={isRange(end) ? styles.noBreak : ""}>{end}</span>}
     </div>
   </div>
   <div class={styles.organization}>
@@ -1213,6 +1217,8 @@ Open `http://localhost:3000/resume` AND `http://localhost:4321/resume` in two br
 
 Note any visual diffs. Fix until parity.
 
+**Known acceptable diff:** the current React renderer's `wrapNoBreaks` walks the full rendered tree and wraps any `\d+–\d+` pattern (including body text like "1–2 weeks"). The Astro port intentionally limits the no-break wrapping to the Stint date attributes only — per the spec, no tree-walk. Body-text occurrences of patterns like "1–2 weeks" will not have a `<span class={noBreak}>` wrapper. This is by design.
+
 ```bash
 kill "$(cat /tmp/astro-dev.pid)" "$(cat /tmp/next-dev.pid)" || true
 rm -f /tmp/astro-dev.pid /tmp/next-dev.pid /tmp/astro-dev.log /tmp/next-dev.log
@@ -1251,7 +1257,12 @@ export const prerender = true;
 export async function GET() {
   const entry = await getEntry("resume", "resume");
   if (!entry) throw new Error("resume entry not found");
-  const ast = Markdoc.parse(entry.body);
+  // Astro's glob loader exposes raw `.mdoc` content via `entry.body`.
+  // Guard against undefined defensively — produces a zero-length body
+  // rather than crashing if Astro's loader semantics change.
+  const raw = entry.body ?? "";
+  if (!raw) throw new Error("resume entry has empty body — check the glob loader");
+  const ast = Markdoc.parse(raw);
   const tree = Markdoc.transform(ast, {
     ...baseConfig,
     nodes: {
@@ -1421,7 +1432,26 @@ git rm -f tsconfig.tsbuildinfo  # may not be tracked — `-f` makes the rm idemp
 
 - [ ] **Step 2: Update `.gitignore`** — remove the `.next/` block
 
-Open `.gitignore`. Remove any line(s) referencing `.next/`. Keep `dist/` and `.astro/` (added in Task 4).
+Open `.gitignore` and remove these Next.js-specific lines (verify exact text against the current file):
+
+```
+# next.js
+/.next/
+/out/
+```
+
+Also remove these now-unused entries:
+
+```
+# vercel
+.vercel
+```
+
+```
+next-env.d.ts
+```
+
+Keep `dist/` and `.astro/` (added in Task 4) and everything else (node_modules, .DS_Store, env files, etc.).
 
 - [ ] **Step 3: Re-evaluate `src/global.d.ts`**
 
@@ -1511,7 +1541,7 @@ git push -u origin migrate-to-astro
 gh pr create --title "Migrate from Next.js to Astro" --body "$(cat <<'EOF'
 ## Summary
 - Static-only site running on Astro 5 with @astrojs/markdoc
-- Resume rendering: HTML via `<Content components={...} />`, TXT via custom Markdoc-tree walker
+- Resume rendering: HTML via `<Content />` with components bound in `markdoc.config.mjs`, TXT via custom Markdoc-tree walker
 - /resume/txt download headers via Netlify edge `[[headers]]`
 - No React, no client JS, no SSR adapter
 
