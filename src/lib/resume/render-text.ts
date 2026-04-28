@@ -11,7 +11,7 @@ export type TextComponent<Attrs = Record<string, unknown>> = (
 
 export type TextComponents = Record<string, TextComponent>;
 
-const isTag = (node: RenderableTreeNode): node is Tag =>
+export const isTag = (node: RenderableTreeNode): node is Tag =>
   typeof node === "object" && node !== null && "name" in node && "attributes" in node;
 
 /**
@@ -80,6 +80,34 @@ export function renderText(tree: RenderableTreeNode, opts: { components: TextCom
     return render(node.children as RenderableTreeNode[]);
   };
   return render(decorated);
+}
+
+/**
+ * Wraps a comma-separated list of items to `lineLength`, keeping each item
+ * intact (so multi-word items like "Tailwind CSS" never split mid-item).
+ * `prefix` starts the first line; continuation lines start with `indent`.
+ */
+export function wrapItems(
+  prefix: string,
+  items: string[],
+  indent: string,
+  lineLength: number,
+): string {
+  if (items.length === 0) return prefix ? `${prefix}\n` : "";
+  const lines: string[] = [];
+  let current = prefix;
+  for (let i = 0; i < items.length; i++) {
+    const piece = i === items.length - 1 ? items[i] : `${items[i]}, `;
+    const lineHasContent = current.trimStart().length > 0;
+    if (current.length + piece.length > lineLength && lineHasContent) {
+      lines.push(`${current.trimEnd()}\n`);
+      current = indent + piece;
+    } else {
+      current += piece;
+    }
+  }
+  if (current.trimStart().length > 0) lines.push(`${current}\n`);
+  return lines.join("");
 }
 
 /**

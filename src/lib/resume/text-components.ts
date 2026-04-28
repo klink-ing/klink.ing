@@ -1,7 +1,13 @@
 // src/lib/resume/text-components.ts
-import { type TextComponent, wrapWithPrefix } from "./render-text";
+import type { RenderableTreeNode } from "@markdoc/markdoc";
+import { isTag, type TextComponent, wrapItems, wrapWithPrefix } from "./render-text";
 
-export const Intro: TextComponent = (_attrs, children, render) => `\n\n${render(children)}\n\n`;
+const LINE_LENGTH = 80;
+
+export const Intro: TextComponent = (_attrs, children, render) => {
+  const text = render(children).trim();
+  return `\n\n${wrapWithPrefix(text, "", "", LINE_LENGTH)}\n`;
+};
 
 export const Stint: TextComponent<{
   title: string;
@@ -22,7 +28,30 @@ export const Stint: TextComponent<{
   return `${title ? `${title}\n` : ""}${dates ? `${dates}\n` : ""}${orgLine ? `${orgLine}\n` : ""}${body ? `\n${body}` : ""}${tail}`;
 };
 
-export const SkillsSection: TextComponent = (_attrs, children, render) => render(children);
+const isNamed = (node: RenderableTreeNode, name: string) => isTag(node) && node.name === name;
+
+const isH4 = (node: RenderableTreeNode) =>
+  isNamed(node, "h4") ||
+  (isNamed(node, "Heading") && (node as { attributes: { level?: number } }).attributes.level === 4);
+
+export const SkillsSection: TextComponent = (_attrs, children, render) => {
+  const out: string[] = [];
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    const next = children[i + 1];
+    if (isH4(child) && next && isNamed(next, "List") && isTag(next)) {
+      const heading = render([child]).replace(/\n+$/, "");
+      const items = next.children
+        .filter((c) => isNamed(c, "li") && isTag(c))
+        .map((li) => render((li as { children: RenderableTreeNode[] }).children).trim());
+      out.push(`${wrapItems(heading, items, "  ", LINE_LENGTH)}\n`);
+      i++;
+      continue;
+    }
+    out.push(render([child]));
+  }
+  return out.join("");
+};
 
 export const List: TextComponent<{ listType?: "bullet" | "compact" }> = (attrs, children, render) =>
   attrs.listType === "compact" ? `${render(children)}\n\n` : render(children);
@@ -39,9 +68,9 @@ export const li: TextComponent<{
   }
   if (attrs.ordered) {
     const prefix = `${attrs.index}. `;
-    return wrapWithPrefix(text, prefix, " ".repeat(prefix.length), 80);
+    return wrapWithPrefix(text, prefix, " ".repeat(prefix.length), LINE_LENGTH);
   }
-  return wrapWithPrefix(text, "- ", "  ", 80);
+  return wrapWithPrefix(text, "- ", "  ", LINE_LENGTH);
 };
 
 export const PageBreak: TextComponent = () => "";

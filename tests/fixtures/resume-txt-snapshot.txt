@@ -3,7 +3,12 @@ https://github.com/dogmar/
 chris@klink.ing
 
 
-Senior frontend engineer with a design background, specializing in design systems and component architecture. At Cleanlab, served as the sole frontend technical lead — owning architecture decisions, setting contribution standards, and partnering with PM and design on product direction across a 3-product B2B SaaS platform.
+Senior frontend engineer with a design background, specializing in design
+systems and component architecture. At Cleanlab, served as the sole frontend
+technical lead — owning architecture decisions, setting contribution standards,
+and partnering with PM and design on product direction across a 3-product B2B
+SaaS platform.
+
 
 
 --- EXPERIENCE ---
@@ -35,7 +40,6 @@ Cleanlab (https://cleanlab.ai) - San Francisco, CA
   driving every sales conversation from launch.
 
 
-
 FRONTEND ENGINEER
 2022 – 2024
 Plural (https://plural.sh) - Remote
@@ -49,14 +53,12 @@ Plural (https://plural.sh) - Remote
   experience.
 
 
-
 SENIOR DESIGNER/DEVELOPER
 2015 – 2022
 Camp + King (https://camp-king.com) - San Francisco, CA
 
 - Built and maintained web products using React and Next.js for a range of
   clients across industries.
-
 
 
 SENIOR INTERACTIVE DESIGNER
@@ -77,11 +79,13 @@ FCB (Now Omnicom) (https://www.omc.com/) - Seattle, WA + San Francisco, CA
 
 LANGUAGES: HTML, CSS, JavaScript, TypeScript
 
-TECHNOLOGIES: React, Next.js, Tailwind CSS, TanStack Table, CSS Modules, Styled Components, GraphQL, Vite, Vitest, Sass, GSAP, Motion
+TECHNOLOGIES: React, Next.js, Tailwind CSS, TanStack Table, CSS Modules,
+  Styled Components, GraphQL, Vite, Vitest, Sass, GSAP, Motion
 
 ACCESSIBILITY: WAI-ARIA, semantic HTML, screen reader compatibility
 
 DESIGN TOOLS: Figma, Rive, Photoshop, Illustrator, After Effects
+
 
 
 --- EDUCATION ---
@@ -90,6 +94,7 @@ DESIGN TOOLS: Figma, Rive, Photoshop, Illustrator, After Effects
 BACHELOR OF SCIENCE IN COMPUTER SCIENCE
 2003
 Western Washington University (https://www.wwu.edu/) - Bellingham, WA
+
 
 
 ASSOCIATE OF APPLIED SCIENCE IN GRAPHIC DESIGN

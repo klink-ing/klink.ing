@@ -31,6 +31,6 @@ export async function GET() {
   const { name, github, email } = entry.data;
   const header = `${name}\n${github}\n${email}\n`;
   const body = renderText(tree, { components: components as unknown as TextComponents });
-  const content = (header + body).trim();
+  const content = `${(header + body).trim()}\n`;
   return new Response(content);
 }
