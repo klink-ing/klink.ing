@@ -1,5 +1,34 @@
 import * as React from "react";
 
+export const Intro = ({
+  children,
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <>
+      {"\n\n"}
+      {children}
+    </>
+  );
+};
+
+function reactNodeToText(node: React.ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") {
+    return String(node);
+  }
+  if (Array.isArray(node)) {
+    return node.map(reactNodeToText).join("");
+  }
+  if (React.isValidElement(node)) {
+    const props = node.props as { children?: React.ReactNode };
+    return reactNodeToText(props.children);
+  }
+  return "";
+}
+
 /**
  * Processes React children to format list items for compact display in skills sections.
  * Adds commas between list items and recursively processes nested children.
@@ -8,50 +37,39 @@ import * as React from "react";
  * @returns Processed React nodes with commas added between list items
  */
 function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
-	const childrenArray = React.Children.toArray(children);
-	return React.Children.map(children, (child, index) => {
-		if (!React.isValidElement(child)) {
-			return child;
-		}
+  const childrenArray = React.Children.toArray(children);
+  return React.Children.map(children, (child, index) => {
+    if (!React.isValidElement(child)) {
+      return child;
+    }
 
-		// If it's a List component, replace with compactList version
-		if (child.type === "li") {
-			const listProps = child.props as {
-				children?: React.ReactNode;
-			};
-			// Only add comma if the next child is also an li element
-			const nextChild = childrenArray[index + 1];
-			const hasNextLi =
-				React.isValidElement(nextChild) && nextChild.type === "li";
-			return (
-				<>
-					{listProps.children}
-					{hasNextLi && ", "}
-				</>
-			);
-		}
+    // If it's a List component, replace with compactList version
+    if (child.type === "li") {
+      const listProps = child.props as {
+        children?: React.ReactNode;
+      };
+      // Only add comma if the next child is also an li element
+      const nextChild = childrenArray[index + 1];
+      const hasNextLi = React.isValidElement(nextChild) && nextChild.type === "li";
+      return (
+        <>
+          {listProps.children}
+          {hasNextLi && ", "}
+        </>
+      );
+    }
 
-		// Recursively process children if element has children prop
-		const childProps = child.props as { children?: React.ReactNode } & Record<
-			string,
-			unknown
-		>;
-		if (
-			childProps &&
-			typeof childProps === "object" &&
-			"children" in childProps
-		) {
-			return React.cloneElement(
-				child as React.ReactElement<{ children?: React.ReactNode }>,
-				{
-					...childProps,
-					children: processSkillsListChildren(childProps.children),
-				},
-			);
-		}
+    // Recursively process children if element has children prop
+    const childProps = child.props as { children?: React.ReactNode } & Record<string, unknown>;
+    if (childProps && typeof childProps === "object" && "children" in childProps) {
+      return React.cloneElement(child as React.ReactElement<{ children?: React.ReactNode }>, {
+        ...childProps,
+        children: processSkillsListChildren(childProps.children),
+      });
+    }
 
-		return child;
-	});
+    return child;
+  });
 }
 
 /**
@@ -65,80 +83,59 @@ function processSkillsListChildren(children: React.ReactNode): React.ReactNode {
  * @returns Array of strings, each representing a line with newline character
  */
 const splitChildrenByLines = (
-	children: React.ReactNode,
-	lineLength: number = 80,
-	prefix: string = "- ",
-	indent: string = "  ",
+  children: React.ReactNode,
+  lineLength: number = 80,
+  prefix: string = "- ",
+  indent: string = "  ",
 ): string[] => {
-	/**
-	 * Recursively extracts text content from a React node, ignoring element structure.
-	 *
-	 * @param node - The React node to extract text from
-	 * @returns Extracted text content as a string
-	 */
-	const extractText = (node: React.ReactNode): string => {
-		if (typeof node === "string" || typeof node === "number") {
-			return String(node);
-		}
-		if (Array.isArray(node)) {
-			return node.map(extractText).join("");
-		}
-		if (React.isValidElement(node)) {
-			const props = node.props as { children?: React.ReactNode };
-			return extractText(props.children);
-		}
-		return "";
-	};
+  // Extract all text from children
+  const text = reactNodeToText(children).trim();
 
-	// Extract all text from children
-	const text = extractText(children).trim();
+  if (!text) {
+    return [];
+  }
 
-	if (!text) {
-		return [];
-	}
+  // Normalize whitespace: replace multiple spaces with single space
+  const normalizedText = text.replace(/\s+/g, " ");
 
-	// Normalize whitespace: replace multiple spaces with single space
-	const normalizedText = text.replace(/\s+/g, " ");
+  // Split into words
+  const words = normalizedText.split(" ").filter((w) => w.length > 0);
+  const lines: string[] = [];
+  let currentLine = prefix;
+  let isFirstLine = true;
 
-	// Split into words
-	const words = normalizedText.split(" ").filter((w) => w.length > 0);
-	const lines: string[] = [];
-	let currentLine = prefix;
-	let isFirstLine = true;
+  for (const word of words) {
+    // Determine if we need a space before the word
+    const needsSpace = currentLine.length > 0 && !currentLine.endsWith(" ");
+    const separator = needsSpace ? " " : "";
+    const testLine = currentLine + separator + word;
 
-	for (const word of words) {
-		// Determine if we need a space before the word
-		const needsSpace = currentLine.length > 0 && !currentLine.endsWith(" ");
-		const separator = needsSpace ? " " : "";
-		const testLine = currentLine + separator + word;
+    // Check if adding this word would exceed line length
+    // Only wrap if we have at least one word on the current line
+    const lineHasWords = isFirstLine
+      ? currentLine.length > prefix.length
+      : currentLine.length > indent.length;
 
-		// Check if adding this word would exceed line length
-		// Only wrap if we have at least one word on the current line
-		const lineHasWords = isFirstLine
-			? currentLine.length > prefix.length
-			: currentLine.length > indent.length;
+    if (testLine.length > lineLength && lineHasWords) {
+      // Save current line
+      lines.push(`${currentLine}\n`);
+      // Start new line with indent
+      currentLine = indent + word;
+      isFirstLine = false;
+    } else {
+      // Add word to current line
+      currentLine = testLine;
+      isFirstLine = false;
+    }
+  }
 
-		if (testLine.length > lineLength && lineHasWords) {
-			// Save current line
-			lines.push(`${currentLine}\n`);
-			// Start new line with indent
-			currentLine = indent + word;
-			isFirstLine = false;
-		} else {
-			// Add word to current line
-			currentLine = testLine;
-			isFirstLine = false;
-		}
-	}
+  // Add the last line if it has content
+  const lineHasWords = currentLine.length > prefix.length || currentLine.length > indent.length;
+  if (lineHasWords) {
+    lines.push(`${currentLine}\n`);
+  }
 
-	// Add the last line if it has content
-	const lineHasWords =
-		currentLine.length > prefix.length || currentLine.length > indent.length;
-	if (lineHasWords) {
-		lines.push(`${currentLine}\n`);
-	}
-
-	return lines;
+  return lines;
 };
 
 /**
@@ -149,54 +146,42 @@ const splitChildrenByLines = (
  * @returns Processed React nodes with formatted list content
  */
 function processBulletList(children: React.ReactNode): React.ReactNode {
-	return React.Children.map(children, (child) => {
-		if (!React.isValidElement(child)) {
-			return child;
-		}
+  return React.Children.map(children, (child) => {
+    if (!React.isValidElement(child)) {
+      return child;
+    }
 
-		// If it's an li element, split the children by lines
-		if (child.type === "li") {
-			const listProps = child.props as {
-				children?: React.ReactNode;
-			};
-			return splitChildrenByLines(listProps.children);
-		}
+    // If it's an li element, split the children by lines
+    if (child.type === "li") {
+      const listProps = child.props as {
+        children?: React.ReactNode;
+      };
+      return splitChildrenByLines(listProps.children);
+    }
 
-		// If it's a ul or ol element, make children li elements compact
-		if (child.type === "ul" || child.type === "ol") {
-			const listProps = child.props as React.HTMLAttributes<
-				HTMLUListElement | HTMLOListElement
-			>;
+    // If it's a ul or ol element, make children li elements compact
+    if (child.type === "ul" || child.type === "ol") {
+      const listProps = child.props as React.HTMLAttributes<HTMLUListElement | HTMLOListElement>;
 
-			return (
-				<>
-					{"\n"}
-					{processSkillsListChildren(listProps.children)}
-				</>
-			);
-		}
+      return (
+        <>
+          {"\n"}
+          {processSkillsListChildren(listProps.children)}
+        </>
+      );
+    }
 
-		// Recursively process children if element has children prop
-		const childProps = child.props as { children?: React.ReactNode } & Record<
-			string,
-			unknown
-		>;
-		if (
-			childProps &&
-			typeof childProps === "object" &&
-			"children" in childProps
-		) {
-			return React.cloneElement(
-				child as React.ReactElement<{ children?: React.ReactNode }>,
-				{
-					...childProps,
-					children: processBulletList(childProps.children),
-				},
-			);
-		}
+    // Recursively process children if element has children prop
+    const childProps = child.props as { children?: React.ReactNode } & Record<string, unknown>;
+    if (childProps && typeof childProps === "object" && "children" in childProps) {
+      return React.cloneElement(child as React.ReactElement<{ children?: React.ReactNode }>, {
+        ...childProps,
+        children: processBulletList(childProps.children),
+      });
+    }
 
-		return child;
-	});
+    return child;
+  });
 }
 
 /**
@@ -211,57 +196,46 @@ function processBulletList(children: React.ReactNode): React.ReactNode {
  * @param props.organization - Company or institution name
  * @param props.url - Optional URL to the organization's website
  * @param props.children - Optional content/description for the stint
- * @param props.pageBreak - Optional flag for page breaks (used by parent)
  * @returns Formatted text representation of the stint
  */
 export const Stint: React.FunctionComponent<{
-	title: React.ReactNode;
-	start?: string;
-	end?: string;
-	location: string;
-	organization: string;
-	url?: string;
-	children?: React.ReactNode;
-	pageBreak?: boolean;
-}> = ({
-	title,
-	start,
-	end,
-	location,
-	organization,
-	url,
-	children,
-	// pageBreak is used by parent section component, not here
-}) => {
-	// Handle special title formatting for education entries
+  title: React.ReactNode;
+  start?: string;
+  end?: string;
+  location: string;
+  organization: string;
+  url?: string;
+  children?: React.ReactNode;
+}> = ({ title, start, end, location, organization, url, children }) => {
+  // Handle special title formatting for education entries
 
-	const formattedTitle = `${title?.toString().toUpperCase()}\n`;
+  const formattedTitle = `${reactNodeToText(title).toUpperCase()}\n`;
 
-	return (
-		<>
-			{formattedTitle}
+  return (
+    <>
+      {formattedTitle}
 
-			{start}
-			{start && end && <> – </>}
-			{end}
-			{"\n"}
+      {start}
+      {start && end && <> – </>}
+      {end}
+      {"\n"}
 
-			{organization}
-			{url && <> ({url})</>}
-			{location && <> - {location}</>}
-			{"\n"}
+      {organization}
+      {url && <> ({url})</>}
+      {location && <> - {location}</>}
+      {"\n"}
 
-			{children ? (
-				<>
-					{"\n"}
-					{children}
-					{"\n\n\n"}
-				</>
-			) : (
-				"\n\n"
-			)}
-		</>
-	);
+      {children ? (
+        <>
+          {"\n"}
+          {children}
+          {"\n\n\n"}
+        </>
+      ) : (
+        "\n\n"
+      )}
+    </>
+  );
 };
 
 /**
@@ -273,9 +247,9 @@ export const Stint: React.FunctionComponent<{
  * @returns The children wrapped in a fragment
  */
 export const SkillsSection: React.FunctionComponent<{
-	children?: React.ReactNode;
+  children?: React.ReactNode;
 }> = ({ children }) => {
-	return <>{children}</>;
+  return <>{children}</>;
 };
 
 /**
@@ -289,19 +263,19 @@ export const SkillsSection: React.FunctionComponent<{
  * @returns Formatted list content as text
  */
 export const List: React.FunctionComponent<{
-	ordered?: boolean;
-	children?: React.ReactNode;
-	listType?: "bullet" | "compact";
+  ordered?: boolean;
+  children?: React.ReactNode;
+  listType?: "bullet" | "compact";
 }> = ({ children, listType = "bullet" }) => {
-	if (listType === "compact") {
-		return (
-			<>
-				{processSkillsListChildren(children)}
-				{"\n\n"}
-			</>
-		);
-	}
-	return processBulletList(children);
+  if (listType === "compact") {
+    return (
+      <>
+        {processSkillsListChildren(children)}
+        {"\n\n"}
+      </>
+    );
+  }
+  return processBulletList(children);
 };
 
 /**
@@ -317,27 +291,35 @@ export const List: React.FunctionComponent<{
  * @param props.children - The heading text content
  * @returns Formatted heading text with appropriate spacing
  */
+/**
+ * PageBreak component for text output.
+ * Renders nothing - page breaks are only meaningful in HTML output.
+ */
+export const PageBreak: React.FunctionComponent = () => null;
+
 export const Heading: React.FunctionComponent<{
-	level: number;
-	children?: React.ReactNode;
+  level: number;
+  children?: React.ReactNode;
 }> = ({ level, children }) => {
-	if (level === 4) {
-		return <>{children?.toString().toUpperCase()}: </>;
-	}
-	if (level === 3) {
-		return <>{`${children?.toString().toUpperCase()}\n\n`}</>;
-	}
-	if (level === 2) {
-		return (
-			<>
-				{"\n\n\n"}--- {children?.toString().toUpperCase()} ---{"\n\n\n"}
-			</>
-		);
-	}
-	return (
-		<>
-			{children}
-			{"\n\n"}
-		</>
-	);
+  const headingText = reactNodeToText(children).toUpperCase();
+
+  if (level === 4) {
+    return <>{headingText}: </>;
+  }
+  if (level === 3) {
+    return <>{`${headingText}\n\n`}</>;
+  }
+  if (level === 2) {
+    return (
+      <>
+        {"\n\n\n"}--- {headingText} ---{"\n\n\n"}
+      </>
+    );
+  }
+  return (
+    <>
+      {children}
+      {"\n\n"}
+    </>
+  );
 };

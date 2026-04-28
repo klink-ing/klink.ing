@@ -1,4 +1,14 @@
-@import "@/styles/vars.scss";
+.pageBreak {
+  page-break-after: always;
+  break-after: page;
+  & * {
+    display: none;
+  }
+}
+
+.noBreak {
+  white-space: nowrap;
+}
 
 .resumePage {
   --max-width: 800px;
@@ -36,18 +46,21 @@
   }
 
   @media print {
-    --font-body-size: 13px;
+    --font-body-size: 13.5px;
     --h1-size: calc(var(--font-body-size) * 1);
-    --h2-size: calc(var(--font-body-size) * 1.5);
+    --h2-size: calc(var(--font-body-size) * 1.75);
     --h3-size: calc(var(--font-body-size) * 1.25);
     --h4-size: 1em;
     --resume-h-padding: 0;
     --resume-t-padding: 0;
     --resume-b-padding: 0;
     --resume-t-padding: 0;
+    --max-width: var(--print-max-width);
     font-size: var(--font-body-size);
     line-height: 1.4em;
   }
+
+  text-wrap: pretty;
 
   background-color: white;
 
@@ -77,10 +90,11 @@
   }
 
   header {
+    position: relative;
     text-align: right;
     text-align: end;
     margin-bottom: calc(var(--v-space) * 2);
-    font-family: #{$fontRegular};
+    font-family: var(--font-regular);
     font-weight: 300;
     h1 {
       font-size: var(--h1-size);
@@ -99,7 +113,7 @@
   h4,
   h5,
   h6 {
-    font-family: #{$fontRegular};
+    font-family: var(--font-regular);
     font-weight: 300;
     line-height: 1.1em;
     margin: 0;
@@ -109,7 +123,7 @@
     font-size: var(--h2-size);
     color: var(--color-accent);
     text-transform: uppercase;
-    font-weight: $fontWeightLight;
+    font-weight: var(--font-weight-light);
     letter-spacing: 0.05em;
     margin-bottom: 0.5em;
     margin-left: -0.12em;
@@ -119,15 +133,20 @@
   }
   h3 {
     font-size: var(--h3-size);
-    font-family: $fontCondensed;
-    font-weight: $fontWeightHeavy;
+    font-family: var(--font-condensed);
+    font-weight: var(--font-weight-heavy);
     margin: 0;
   }
 
   h4 {
-    font-family: $fontCondensed;
+    font-family: var(--font-condensed);
     font-size: var(--h4-size);
     font-weight: 700;
+  }
+
+  .intro {
+    margin-top: calc(var(--v-space) * 3);
+    margin-bottom: calc(var(--v-space) * 3);
   }
 
   .stint {
@@ -141,13 +160,13 @@
     margin-top: var(--v-space);
   }
   .topLine {
-    font-family: #{$fontRegular};
+    font-family: var(--font-regular);
     font-weight: 400;
     font-size: 16px;
   }
   @media (width >= 600px) {
     .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
-      margin-top: calc(var(--v-space) * 4);
+      margin-top: calc(var(--v-space) * 3);
     }
     .stint.noChildren + .stint {
       margin-top: var(--v-space);
@@ -186,11 +205,10 @@
     & > li {
       --line-height: 1.7em;
       --color-link: var(--color-accent-darker);
-      // color: var(--color-accent);
       display: inline-flex;
       gap: 0.2em;
       margin-right: 0.2em;
-      font-family: $fontCondensed;
+      font-family: var(--font-condensed);
       font-weight: 300;
       font-size: var(--small-size);
       height: var(--line-height);
@@ -221,7 +239,7 @@
 
   .organization,
   .location {
-    font-family: #{$fontRegular};
+    font-family: var(--font-regular);
     font-weight: 400;
     font-size: 16px;
     display: inline;
@@ -264,7 +282,11 @@
 
   @media print {
     header {
-      margin-bottom: 2.5em;
+      margin-bottom: calc(var(--v-space) * 3);
+    }
+    .intro {
+      margin-top: calc(var(--v-space) * 2);
+      margin-bottom: calc(var(--v-space) * 2);
     }
     .printLogo {
       display: block;
@@ -273,12 +295,13 @@
       top: 0;
       left: 0;
     }
-    .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
-      margin-top: 2.5em;
-    }
     .bulletList {
-      margin-top: 1em;
+      margin-top: calc(var(--v-space) * 0.5);
     }
+    .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
+      margin-top: calc(var(--v-space) * 1.5);
+    }
+
     .organization {
       font-size: 1.1em;
     }
@@ -287,18 +310,12 @@
     }
     h2 {
       &:not(:first-of-type) {
-        margin-top: 4em;
+        margin-top: calc(var(--v-space) * 3);
       }
-    }
-    ul ul {
-      display: none;
-    }
-    .skillsSection {
-      row-gap: 0.1em;
     }
     ul.compactList {
       & > li {
-        font-family: #{$fontBody};
+        font-family: var(--font-body);
         font-weight: 300;
         line-height: 1.2em;
         font-size: 1em;

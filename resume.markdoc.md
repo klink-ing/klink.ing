@@ -4,6 +4,10 @@ github: https://github.com/dogmar/
 email: chris@klink.ink
 ---
 
+{% intro %}
+Senior frontend engineer with a design background, specializing in design systems and component architecture. At Cleanlab, served as the sole frontend technical lead — owning architecture decisions, setting contribution standards, and partnering with PM and design on product direction across a 3-product B2B SaaS platform.
+{% /intro %}
+
 ## Experience
 
 {% stint
@@ -15,10 +19,11 @@ email: chris@klink.ink
   location="San Francisco, CA"
 %}
 
-- Led development of a custom frontend component library, migrating from Chakra-UI to a flexible, scalable solution with React, TypeScript, and Tailwind CSS. Improved developer productivity and enabled faster feature development across multiple AI-driven products.
-- Developed a multi-threaded chat interface using React and Next.js to demonstrate Cleanlab's hallucination-detection system in real-time. Became a critical marketing tool used in every sales interaction, directly supporting revenue generation.
-- Architected frontend interfaces for AI-driven products, integrating REST APIs with React, Next.js, and Tailwind CSS. Implemented responsive layouts, optimized rendering for complex data visualizations, and improved performance through code splitting and lazy loading.
-- Collaborated with product and engineering teams to refine UI/UX strategies, translating design requirements into production-ready React components focused on user experience and maintainability.
+- Architected a composable component library (React, TypeScript, Tailwind CSS) that became the shared foundation across 3 products — enabling new product UIs to go from zero to working prototype in 1–2 weeks.
+- Established contribution infrastructure for the component library: authored documentation and JSDoc standards, built CI/CD pipelines with automated semver versioning, and maintained a beta release channel — setting the standards all frontend contributions were held to.
+- Rebuilt the marketing site from ad-hoc styles into a reusable component system — eliminating dependency on an external contractor, enabling non-engineers to ship content updates independently, cutting build times from 15 to 5 minutes, and bringing the site to full WAI-ARIA conformance.
+- Replaced ag-grid with a custom TanStack Table implementation — unlocking expandable row detail views showing complete Q&A conversation threads with AI-powered response quality analysis, features architecturally incompatible with ag-grid's model, while eliminating third-party styling constraints and reducing bundle size.
+- Built a concurrent chat interface supporting multiple simultaneous streaming conversations with real-time hallucination detection, switchable mid-stream without blocking — became the sole demo tool for a net-new product line, driving every sales conversation from launch.
 
 {% /stint %}
 
@@ -31,12 +36,12 @@ email: chris@klink.ink
   location="Remote"
 %}
 
-- Built intuitive interfaces for a Kubernetes management dashboard using GraphQL, React, Vite, and Styled Components. Developed complex data visualization components displaying cluster metrics and system health, enabling operations teams to monitor and manage infrastructure effectively.
-- Developed and maintained a reusable component library using React and TypeScript. Reduced development time and improved design system adherence, standardizing UI patterns across the organization.
-- Designed and implemented marketing and documentation websites, optimizing for fast page load times and semantic HTML to improve SEO and screen reader compatibility.
-- Integrated GraphQL APIs with React components using modern data fetching patterns, implementing efficient caching strategies and optimistic UI updates for real-time experiences.
+- Built a real-time infrastructure monitoring dashboard for enterprise platform teams — surfacing live metrics across distributed environments via GraphQL subscriptions, with complex state management to handle high-frequency data updates.
+- Became sole owner of an inherited frontend component library, driving UI consistency and adoption across a full-stack team with varying frontend experience.
 
 {% /stint %}
+
+{% pageBreak /%}
 
 {% stint
   title="Senior Designer/Developer"
@@ -45,14 +50,9 @@ email: chris@klink.ink
   organization="Camp + King"
   url="https://camp-king.com"
   location="San Francisco, CA"
-  pageBreak=true
 %}
 
-- Designed and developed promotional websites using React and Next.js, ensuring fast loading times and maintainability. Maintained all web services for the agency across multiple client projects.
-- Built interactive web tools for real estate agents to create custom promotional graphics with real-time preview using canvas-based graphics generation systems.
-  - [RE/MAX Welcome Mats](https://www.remaxhustle.com/welcome-mat/select-mat)
-  - [RE/MAX Hustlegraphics](https://www.remaxhustle.com/hustlegraphic)
-- Created HTML/JS-based banner ads optimized for very small file sizes and developed motion graphics templates in After Effects and Photoshop for national ad campaigns.
+- Built and maintained web products using React and Next.js for a range of clients across industries.
 
 {% /stint %}
 
@@ -67,20 +67,6 @@ email: chris@klink.ink
 
 - Designed and developed interactive promotional websites using HTML, CSS, and JavaScript, delivering cross-browser and cross-device compatibility that met brand guidelines and technical requirements.
 - Created print and digital advertisements. Developed creative concepts and implemented them across various platforms to maximize campaign reach and engagement.
-
-{% /stint %}
-
-{% stint
-  title="Embedded Software Engineer"
-  start="2003"
-  end="2004"
-  organization="The Boeing Company"
-  url="http://www.boeing.com/"
-  location="Renton, WA"
-  pageBreak=true
-%}
-
-- Programmed bit-level communications software in C++ for aircraft systems. Implemented low-level protocols according to military specifications and ensured aerospace industry compliance.
 
 {% /stint %}
 
@@ -100,13 +86,21 @@ email: chris@klink.ink
 - React
 - Next.js
 - Tailwind CSS
+- TanStack Table
 - CSS Modules
 - Styled Components
 - GraphQL
 - Vite
+- Vitest
 - Sass
 - GSAP
 - Motion
+
+#### Accessibility
+
+- WAI-ARIA
+- semantic HTML
+- screen reader compatibility
 
 #### Design Tools
 
@@ -121,19 +115,19 @@ email: chris@klink.ink
 ## Education
 
 {% stint
-  title="Associate of Applied Science in Graphic Design"
-  organization="Seattle Central Creative Academy"
-  url="http://seattlecentralcreativeacademy.com/"
-  location="Seattle, WA"
-  end="2008"
-%}
-{% /stint %}
-
-{% stint
   title="Bachelor of Science in Computer Science"
   organization="Western Washington University"
   url="https://www.wwu.edu/"
   location="Bellingham, WA"
   end="2003"
+%}
+{% /stint %}
+
+{% stint
+  title="Associate of Applied Science in Graphic Design"
+  organization="Seattle Central Creative Academy"
+  url="http://seattlecentralcreativeacademy.com/"
+  location=""
+  end="2008"
 %}
 {% /stint %}
