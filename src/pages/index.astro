@@ -1,0 +1,18 @@
+---
+// src/pages/index.astro
+import Logo from "@/components/Logo.astro";
+import RootLayout from "@/layouts/RootLayout.astro";
+import styles from "@/styles/splash.module.css";
+---
+<RootLayout title="Klink" description="All things Klink">
+  <div class={styles.splash}>
+    <div class={styles.splashInner}>
+      <Logo class={styles.logo} />
+      <nav>
+        <ul>
+          <li><a href="/resume">Resumé</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</RootLayout>
