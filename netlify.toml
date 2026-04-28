@@ -1,5 +1,5 @@
 [build]
-command = "vp run build"
+command = "pnpm build"
 publish = "dist"
 
 [[headers]]
