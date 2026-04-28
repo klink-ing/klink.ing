@@ -7,7 +7,7 @@ import {
   extractGithubUsername,
   getResumeAstAndFrontmatter,
 } from "../utils";
-import { List, SkillsSection, Stint } from "./markdoc-components";
+import { List, PageBreak, SkillsSection, Stint, wrapNoBreaks, Intro } from "./markdoc-components";
 import { config } from "./markdoc-config";
 import styles from "./resume.module.css";
 
@@ -16,6 +16,8 @@ const components = {
   Stint,
   SkillsSection,
   List,
+  PageBreak,
+  Intro,
 };
 
 // Server component - no client-side rendering needed
@@ -25,7 +27,7 @@ const Resume = () => {
   const content = Markdoc.transform(ast, configWithFrontmatter);
 
   // Render the entire content - Markdoc will handle the structure
-  const rendered = Markdoc.renderers.react(content, React, { components });
+  const rendered = wrapNoBreaks(Markdoc.renderers.react(content, React, { components }));
 
   // Create header from frontmatter
   // Extract GitHub username from URL

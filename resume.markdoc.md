@@ -4,7 +4,9 @@ github: https://github.com/dogmar/
 email: chris@klink.ink
 ---
 
+{% intro %}
 Senior frontend engineer with a design background, specializing in design systems and component architecture. At Cleanlab, served as the sole frontend technical lead — owning architecture decisions, setting contribution standards, and partnering with PM and design on product direction across a 3-product B2B SaaS platform.
+{% /intro %}
 
 ## Experience
 
@@ -38,6 +40,8 @@ Senior frontend engineer with a design background, specializing in design system
 - Became sole owner of an inherited frontend component library, driving UI consistency and adoption across a full-stack team with varying frontend experience.
 
 {% /stint %}
+
+{% pageBreak /%}
 
 {% stint
   title="Senior Designer/Developer"

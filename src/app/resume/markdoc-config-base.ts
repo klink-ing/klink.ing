@@ -18,6 +18,10 @@ const addListAttributes = (node: Node, attrs: Record<string, unknown>): void => 
 // This contains the common tags and nodes
 export const baseConfig: Config = {
   tags: {
+    intro: {
+      render: "Intro",
+      attributes: {},
+    },
     stint: {
       render: "Stint",
       attributes: {
@@ -37,6 +41,11 @@ export const baseConfig: Config = {
         addListAttributes(node, { listType: "compact" });
         return new Markdoc.Tag("SkillsSection", node.attributes, node.transformChildren(config));
       },
+    },
+    pageBreak: {
+      render: "PageBreak",
+      attributes: {},
+      selfClosing: true,
     },
   },
   nodes: {

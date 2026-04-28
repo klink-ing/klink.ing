@@ -1,3 +1,15 @@
+.pageBreak {
+  page-break-after: always;
+  break-after: page;
+  & * {
+    display: none;
+  }
+}
+
+.noBreak {
+  white-space: nowrap;
+}
+
 .resumePage {
   --max-width: 800px;
 }
@@ -34,18 +46,21 @@
   }
 
   @media print {
-    --font-body-size: 13px;
+    --font-body-size: 13.5px;
     --h1-size: calc(var(--font-body-size) * 1);
-    --h2-size: calc(var(--font-body-size) * 1.5);
+    --h2-size: calc(var(--font-body-size) * 1.75);
     --h3-size: calc(var(--font-body-size) * 1.25);
     --h4-size: 1em;
     --resume-h-padding: 0;
     --resume-t-padding: 0;
     --resume-b-padding: 0;
     --resume-t-padding: 0;
+    --max-width: var(--print-max-width);
     font-size: var(--font-body-size);
     line-height: 1.4em;
   }
+
+  text-wrap: pretty;
 
   background-color: white;
 
@@ -75,6 +90,7 @@
   }
 
   header {
+    position: relative;
     text-align: right;
     text-align: end;
     margin-bottom: calc(var(--v-space) * 2);
@@ -128,6 +144,11 @@
     font-weight: 700;
   }
 
+  .intro {
+    margin-top: calc(var(--v-space) * 3);
+    margin-bottom: calc(var(--v-space) * 3);
+  }
+
   .stint {
     break-inside: avoid;
     page-break-inside: avoid;
@@ -145,7 +166,7 @@
   }
   @media (width >= 600px) {
     .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
-      margin-top: calc(var(--v-space) * 4);
+      margin-top: calc(var(--v-space) * 3);
     }
     .stint.noChildren + .stint {
       margin-top: var(--v-space);
@@ -261,7 +282,11 @@
 
   @media print {
     header {
-      margin-bottom: 2.5em;
+      margin-bottom: calc(var(--v-space) * 3);
+    }
+    .intro {
+      margin-top: calc(var(--v-space) * 2);
+      margin-bottom: calc(var(--v-space) * 2);
     }
     .printLogo {
       display: block;
@@ -270,12 +295,13 @@
       top: 0;
       left: 0;
     }
-    .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
-      margin-top: 2.5em;
-    }
     .bulletList {
-      margin-top: 1em;
+      margin-top: calc(var(--v-space) * 0.5);
     }
+    .stint:not(:is(h1, h2, h3, h4, h5, h6) + .stint) {
+      margin-top: calc(var(--v-space) * 1.5);
+    }
+
     .organization {
       font-size: 1.1em;
     }
@@ -284,14 +310,8 @@
     }
     h2 {
       &:not(:first-of-type) {
-        margin-top: 4em;
+        margin-top: calc(var(--v-space) * 3);
       }
-    }
-    ul ul {
-      display: none;
-    }
-    .skillsSection {
-      row-gap: 0.1em;
     }
     ul.compactList {
       & > li {

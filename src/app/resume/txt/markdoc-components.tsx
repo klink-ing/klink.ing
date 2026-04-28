@@ -1,5 +1,20 @@
 import * as React from "react";
 
+export const Intro = ({
+  children,
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) => {
+  return (
+    <>
+      {"\n\n"}
+      {children}
+    </>
+  );
+};
+
 function reactNodeToText(node: React.ReactNode): string {
   if (typeof node === "string" || typeof node === "number") {
     return String(node);
@@ -181,7 +196,6 @@ function processBulletList(children: React.ReactNode): React.ReactNode {
  * @param props.organization - Company or institution name
  * @param props.url - Optional URL to the organization's website
  * @param props.children - Optional content/description for the stint
- * @param props.pageBreak - Optional flag for page breaks (used by parent)
  * @returns Formatted text representation of the stint
  */
 export const Stint: React.FunctionComponent<{
@@ -192,17 +206,7 @@ export const Stint: React.FunctionComponent<{
   organization: string;
   url?: string;
   children?: React.ReactNode;
-  pageBreak?: boolean;
-}> = ({
-  title,
-  start,
-  end,
-  location,
-  organization,
-  url,
-  children,
-  // pageBreak is used by parent section component, not here
-}) => {
+}> = ({ title, start, end, location, organization, url, children }) => {
   // Handle special title formatting for education entries
 
   const formattedTitle = `${reactNodeToText(title).toUpperCase()}\n`;
@@ -287,6 +291,12 @@ export const List: React.FunctionComponent<{
  * @param props.children - The heading text content
  * @returns Formatted heading text with appropriate spacing
  */
+/**
+ * PageBreak component for text output.
+ * Renders nothing - page breaks are only meaningful in HTML output.
+ */
+export const PageBreak: React.FunctionComponent = () => null;
+
 export const Heading: React.FunctionComponent<{
   level: number;
   children?: React.ReactNode;

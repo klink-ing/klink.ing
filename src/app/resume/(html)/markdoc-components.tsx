@@ -9,18 +9,9 @@ export const Stint: React.FunctionComponent<{
   location: string;
   organization: string;
   url?: string;
+  className?: string;
   children?: React.ReactNode;
-  pageBreak?: boolean;
-}> = ({
-  title,
-  start,
-  end,
-  location,
-  organization,
-  url,
-  children,
-  // pageBreak is used by parent section component, not here
-}) => {
+}> = ({ title, start, end, location, organization, url, className, children }) => {
   // Handle special title formatting for education entries
   const formattedTitle =
     typeof title === "string" && title.includes(" in ") ? (
@@ -33,7 +24,8 @@ export const Stint: React.FunctionComponent<{
     );
 
   const hasChildren = React.Children.count(children) > 0;
-  const stintClassName = hasChildren ? styles.stint : `${styles.stint} ${styles.noChildren}`.trim();
+  const baseClassName = hasChildren ? styles.stint : `${styles.stint} ${styles.noChildren}`.trim();
+  const stintClassName = className ? `${baseClassName} ${className}` : baseClassName;
 
   const content = (
     <div className={stintClassName}>
@@ -84,4 +76,72 @@ export const List: React.FunctionComponent<{
   const className = listType === "compact" ? styles.compactList : styles.bulletList;
 
   return <Component className={className}>{children}</Component>;
+};
+
+// PageBreak - renders an empty div with the .pageBreak class
+export const PageBreak: React.FunctionComponent = () => (
+  <div aria-hidden="true" className={styles.pageBreak} />
+);
+
+// NoBreak component - inline span that prevents line breaks within its content.
+export const NoBreak: React.FunctionComponent<{ children?: React.ReactNode }> = ({ children }) => (
+  <span className={styles.noBreak}>{children}</span>
+);
+
+const NO_BREAK_PATTERN = /\d+–\d+/g;
+
+function wrapStringWithNoBreaks(value: string): React.ReactNode {
+  if (!NO_BREAK_PATTERN.test(value)) {
+    return value;
+  }
+  NO_BREAK_PATTERN.lastIndex = 0;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null = NO_BREAK_PATTERN.exec(value);
+  let key = 0;
+  while (match !== null) {
+    if (match.index > lastIndex) {
+      parts.push(value.slice(lastIndex, match.index));
+    }
+    parts.push(<NoBreak key={`nb-${key++}`}>{match[0]}</NoBreak>);
+    lastIndex = match.index + match[0].length;
+    match = NO_BREAK_PATTERN.exec(value);
+  }
+  if (lastIndex < value.length) {
+    parts.push(value.slice(lastIndex));
+  }
+  return parts;
+}
+
+// Walks the rendered React tree and wraps text matching {digits}–{digits}
+// in NoBreak spans so the range stays on one line.
+export function wrapNoBreaks(node: React.ReactNode): React.ReactNode {
+  if (typeof node === "string") {
+    return wrapStringWithNoBreaks(node);
+  }
+  if (Array.isArray(node)) {
+    return node.map(wrapNoBreaks);
+  }
+  if (!React.isValidElement(node)) {
+    return node;
+  }
+  if (node.type === NoBreak) {
+    return node;
+  }
+  const props = node.props as { children?: React.ReactNode };
+  if (props.children === undefined || props.children === null) {
+    return node;
+  }
+  const newChildren = React.Children.map(props.children, wrapNoBreaks);
+  return React.cloneElement(node, undefined, newChildren);
+}
+
+export const Intro = ({
+  children,
+  className,
+}: {
+  children?: React.ReactNode;
+  className?: string;
+}) => {
+  return <p className={`${styles.intro}${className ? ` ${className}` : ""}`}>{children}</p>;
 };

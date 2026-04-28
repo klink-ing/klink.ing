@@ -1,7 +1,7 @@
 import Markdoc from "@markdoc/markdoc";
 import * as React from "react";
 import { createConfigWithFrontmatter, getResumeAstAndFrontmatter } from "../utils";
-import { Heading, List, SkillsSection, Stint } from "./markdoc-components";
+import { Heading, List, PageBreak, SkillsSection, Stint, Intro } from "./markdoc-components";
 import { config } from "./markdoc-config";
 
 const components = {
@@ -9,6 +9,8 @@ const components = {
   SkillsSection,
   List,
   Heading,
+  PageBreak,
+  Intro,
 };
 
 /**
