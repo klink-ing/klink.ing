@@ -417,8 +417,20 @@ Each `.astro` component is a direct port of its `.tsx` ancestor.
   the Typekit `<link>`, and a `<slot />`. Imports `global.css`.
 - **`Stint.astro`** — receives `title`, `start`, `end`, `organization`, `url`,
   `location`, `pageBreak`, plus a default `<slot />`. Emits the same DOM as
-  the current React component. Education-style title splitting and date-range
-  no-break wrapping happen inline.
+  the current React component. Three behaviors port over verbatim and must
+  be preserved:
+  1. **Education-style title splitting:** when the title contains the
+     substring `" in "`, split at the first occurrence and wrap the
+     second half in `<span style="white-space: nowrap">` so e.g.
+     "Bachelor of Science in Computer Science" never line-breaks across
+     "Computer Science". Implement in the Astro frontmatter section
+     before rendering.
+  2. **`noChildren` modifier class:** when no body content is provided
+     (no slot content), add `styles.noChildren` alongside `styles.stint`
+     on the wrapper. Use `Astro.slots.has("default")` to detect this.
+  3. **No-break date ranges:** wrap `\d+–\d+` patterns in the dates
+     line in a `<span class={styles.noBreak}>`. Apply directly to the
+     start/end values in the Astro frontmatter — no tree walk.
 - **`SkillsSection.astro`** — `<div class={styles.skillsSection}><slot /></div>`.
 - **`List.astro`** — renders `<ul>` or `<ol>` based on `ordered` attr;
   picks `compactList` or `bulletList` className based on `listType`.
@@ -487,9 +499,13 @@ publish = "dist"
 
 ### `package.json` changes
 
-- **Remove:** `next`, `react`, `react-dom`, `@types/react`, `@types/react-dom`,
-  `js-yaml`, `@types/js-yaml`.
-- **Add:** `astro`, `@astrojs/markdoc`. Keep `@markdoc/markdoc`.
+- **Remove from dependencies:** `next`, `react`, `react-dom`, `js-yaml`.
+- **Remove from devDependencies:** `@types/react`, `@types/react-dom`.
+- **Add to dependencies:** `astro`, `@astrojs/markdoc`. Keep `@markdoc/markdoc`.
+- **Move `js-yaml` + `@types/js-yaml` to devDependencies.** They're still
+  used by the snapshot test (see Verification) to parse frontmatter without
+  booting Astro's content-collection loader. They are not used in any
+  production page or endpoint.
 - **Keep:** `vite-plus` (catalog), `tsx`, `typescript`.
 - **Scripts:**
   ```json
@@ -620,7 +636,10 @@ break each phase into checkpoints with explicit verification.
    `next-env.d.ts`, `styles.d.ts`, `tsconfig.tsbuildinfo`,
    `resume.markdoc.md`, and Next/React deps from `package.json`.
    Update `tsconfig.json` and `.gitignore`. Update `package.json`
-   scripts.
+   scripts. Re-evaluate `src/global.d.ts` — Astro provides typed CSS
+   Module declarations natively via `astro/tsconfigs/strict`, so
+   `global.d.ts` is likely deletable; verify by running `vp check`
+   after removal.
 9. **Update CI** — add `vp run build` and `vp test` steps.
 
 ## Risks and mitigations
