@@ -41,3 +41,6 @@ yarn-error.log*
 # Astro
 dist/
 .astro/
+
+# Superpowers planning artifacts (kept local only)
+docs/superpowers/
