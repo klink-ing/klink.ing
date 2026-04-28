@@ -72,7 +72,8 @@ Senior frontend engineer with a design background, specializing in design system
 
 #### Languages
 
-- HTML- CSS
+- HTML
+- CSS
 - JavaScript
 - TypeScript
 
