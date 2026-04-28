@@ -1,7 +1,7 @@
 // src/lib/resume/text-components.ts
 import { type TextComponent, wrapWithPrefix } from "./render-text";
 
-export const Intro: TextComponent = (_attrs, children, render) => `\n\n${render(children)}`;
+export const Intro: TextComponent = (_attrs, children, render) => `\n\n${render(children)}\n\n`;
 
 export const Stint: TextComponent<{
   title: string;
@@ -11,15 +11,15 @@ export const Stint: TextComponent<{
   organization: string;
   url?: string;
 }> = (attrs, children, render) => {
-  const title = `${attrs.title.toUpperCase()}\n`;
+  const title = attrs.title.toUpperCase().trim();
   const dates =
     attrs.start && attrs.end
-      ? `${attrs.start} – ${attrs.end}\n`
-      : `${attrs.start ?? attrs.end ?? ""}\n`;
-  const orgLine = `${attrs.organization}${attrs.url ? ` (${attrs.url})` : ""}${attrs.location ? ` - ${attrs.location}` : ""}\n`;
-  const body = render(children);
-  const tail = body.trim().length > 0 ? `\n${body}\n\n\n` : "\n\n";
-  return `${title}${dates}${orgLine}${tail}`;
+      ? `${attrs.start.trim()} – ${attrs.end.trim()}`
+      : (attrs.start ?? attrs.end ?? "").trim();
+  const orgLine = `${attrs.organization.trim()}${attrs.url?.trim() ? ` (${attrs.url.trim()})` : ""}${attrs.location?.trim() ? ` - ${attrs.location.trim()}` : ""}`;
+  const body = render(children).trim();
+  let tail = "\n\n\n";
+  return `${title ? `${title}\n` : ""}${dates ? `${dates}\n` : ""}${orgLine ? `${orgLine}\n` : ""}${body ? `\n${body}` : ""}${tail}`;
 };
 
 export const SkillsSection: TextComponent = (_attrs, children, render) => render(children);
@@ -50,6 +50,6 @@ export const Heading: TextComponent<{ level: number }> = (attrs, children, rende
   const text = render(children).toUpperCase();
   if (attrs.level === 4) return `${text}: `;
   if (attrs.level === 3) return `${text}\n\n`;
-  if (attrs.level === 2) return `\n\n\n--- ${text} ---\n\n\n`;
+  if (attrs.level === 2) return `\n\n\n\n--- ${text} ---\n\n\n`;
   return `${render(children)}\n\n`;
 };

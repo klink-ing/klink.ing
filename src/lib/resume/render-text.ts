@@ -52,10 +52,25 @@ function decorateLis(node: RenderableTreeNode): RenderableTreeNode {
   );
 }
 
+const joinCollapsed = (parts: string[]): string => {
+  let result = "";
+  for (const next of parts) {
+    if (!result) {
+      result = next;
+      continue;
+    }
+    const trailing = result.match(/\n*$/)![0].length;
+    const leading = next.match(/^\n*/)![0].length;
+    const merged = "\n".repeat(Math.max(trailing, leading));
+    result = result.slice(0, result.length - trailing) + merged + next.slice(leading);
+  }
+  return result;
+};
+
 export function renderText(tree: RenderableTreeNode, opts: { components: TextComponents }): string {
   const decorated = decorateLis(tree);
   const render: TextRender = (node) => {
-    if (Array.isArray(node)) return node.map(render).join("");
+    if (Array.isArray(node)) return joinCollapsed(node.map(render));
     if (node == null || typeof node === "boolean") return "";
     if (typeof node === "string" || typeof node === "number") return String(node);
     if (!isTag(node)) return "";

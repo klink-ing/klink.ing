@@ -72,9 +72,6 @@ FCB (Now Omnicom) (https://www.omc.com/) - Seattle, WA + San Francisco, CA
 
 
 
-
-
-
 --- SKILLS ---
 
 
@@ -85,8 +82,6 @@ TECHNOLOGIES: React, Next.js, Tailwind CSS, TanStack Table, CSS Modules, Styled 
 ACCESSIBILITY: WAI-ARIA, semantic HTML, screen reader compatibility
 
 DESIGN TOOLS: Figma, Rive, Photoshop, Illustrator, After Effects
-
-
 
 
 --- EDUCATION ---

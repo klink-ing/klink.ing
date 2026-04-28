@@ -32,21 +32,21 @@ export const baseConfig: Config = {
       attributes: {},
       transform(node, config) {
         addListAttributes(node, { listType: "compact" });
-        return new Markdoc.Tag("SkillsSection", node.attributes, node.transformChildren(config));
+        const attributes = node.transformAttributes(config);
+        const children = node.transformChildren(config);
+        const tag = (config.tags?.skillsSection?.render ?? "SkillsSection") as string;
+        return new Markdoc.Tag(tag, attributes, children);
       },
     },
     pageBreak: { render: "PageBreak", attributes: {}, selfClosing: true },
   },
   nodes: {
     list: {
+      render: "List",
       attributes: {
         ordered: { type: Boolean },
         marker: { type: String },
         listType: { type: String },
-      },
-      transform(node, config) {
-        addListAttributes(node, { listType: "compact" });
-        return new Markdoc.Tag("List", node.attributes, node.transformChildren(config));
       },
     },
   },
