@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Logo from "./components/Logo";
-import styles from "./index.module.css";
+import styles from "@/styles/splash.module.css";
 
 export default function Home() {
   return (

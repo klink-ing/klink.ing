@@ -9,7 +9,7 @@ import {
 } from "../utils";
 import { List, PageBreak, SkillsSection, Stint, wrapNoBreaks, Intro } from "./markdoc-components";
 import { config } from "./markdoc-config";
-import styles from "./resume.module.css";
+import styles from "@/styles/resume.module.css";
 
 // Component mapping for Markdoc
 const components = {
