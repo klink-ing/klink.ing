@@ -8,6 +8,7 @@
     "preview": "astro preview",
     "check": "vp check && vp exec prettier --check --plugin=prettier-plugin-astro \"**/*.astro\"",
     "fix": "vp check --fix && vp exec prettier --write --plugin=prettier-plugin-astro \"**/*.astro\"",
+    "resume:pdf": "tsx scripts/generate-resume-pdf.ts",
     "prepare": "vp config"
   },
   "dependencies": {
@@ -21,6 +22,7 @@
     "js-yaml": "^4.1.1",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1",
+    "puppeteer": "^24.42.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite-plus": "catalog:"
