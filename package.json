@@ -6,6 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "vp check && vp exec prettier --check --plugin=prettier-plugin-astro \"**/*.astro\"",
+    "fix": "vp check --fix && vp exec prettier --write --plugin=prettier-plugin-astro \"**/*.astro\"",
     "prepare": "vp config"
   },
   "dependencies": {
@@ -17,6 +19,8 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.0.6",
     "js-yaml": "^4.1.1",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "vite-plus": "catalog:"

@@ -7,11 +7,16 @@ import RootLayout from "@/layouts/RootLayout.astro";
 import styles from "@/styles/resume.module.css";
 
 const entry = await getEntry("resume", "resume");
-if (!entry) throw new Error("resume entry not found");
+if (!entry) {
+  throw new Error("resume entry not found");
+}
 const { Content } = await render(entry);
 const { name, github, email } = entry.data;
-const githubUsername = github.replace(/^https?:\/\/(www\.)?github\.com\//, "").replace(/\/$/, "");
+const githubUsername = github
+  .replace(/^https?:\/\/(www\.)?github\.com\//, "")
+  .replace(/\/$/, "");
 ---
+
 <RootLayout title="Klink - Resumé" description="What's Klink been up to?">
   <div class={styles.resumePage}>
     <MainMenu />

@@ -12,39 +12,70 @@ interface Props {
   class?: string;
 }
 
-const { title, start, end, location, organization, url, class: className } = Astro.props;
+const {
+  title,
+  start,
+  end,
+  location,
+  organization,
+  url,
+  class: className,
+} = Astro.props;
 
 // Education-style title splitting: "Bachelor of Science in Computer Science"
 // → keep "Computer Science" on one line.
 const inIndex = title.indexOf(" in ");
-const titleBefore = inIndex >= 0 ? title.slice(0, inIndex) : null;
-const titleAfter = inIndex >= 0 ? title.slice(inIndex + " in ".length) : null;
+const titleBefore = inIndex !== -1 ? title.slice(0, inIndex) : undefined;
+const titleAfter =
+  inIndex !== -1 ? title.slice(inIndex + " in ".length) : undefined;
 
 const hasChildren = Astro.slots.has("default");
-const stintClassName = [styles.stint, hasChildren ? null : styles.noChildren, className]
+const stintClassName = [
+  styles.stint,
+  hasChildren ? undefined : styles.noChildren,
+  className,
+]
   .filter(Boolean)
   .join(" ");
 
 // No-break date ranges: only the \d+–\d+ pattern needs the noBreak class.
-const isRange = (s: string | undefined) => !!s && /^\d+–\d+$/.test(s);
+const isRange = (s: string | undefined) => Boolean(s) && /^\d+–\d+$/.test(s);
 ---
+
 <div class={stintClassName}>
   <div class={styles.topLine}>
     <h3 class={styles.jobTitle}>
-      {titleBefore !== null && titleAfter !== null ? (
-        <Fragment>{titleBefore} in <span style="white-space: nowrap">{titleAfter}</span></Fragment>
-      ) : (
-        title
-      )}
+      {
+        titleBefore && titleAfter ? (
+          <Fragment>
+            {titleBefore} in{" "}
+            <span style="white-space: nowrap">{titleAfter}</span>
+          </Fragment>
+        ) : (
+          title
+        )
+      }
     </h3>
     <div style="white-space: nowrap" class={styles.dates}>
-      {start && <span class={isRange(start) ? styles.noBreak : ""}>{start}</span>}
+      {
+        start && (
+          <span class={isRange(start) ? styles.noBreak : ""}>{start}</span>
+        )
+      }
       {start && end && <Fragment> – </Fragment>}
       {end && <span class={isRange(end) ? styles.noBreak : ""}>{end}</span>}
     </div>
   </div>
   <div class={styles.organization}>
-    {url ? <a href={url} target="_blank">{organization}</a> : organization}
+    {
+      url ? (
+        <a href={url} target="_blank">
+          {organization}
+        </a>
+      ) : (
+        organization
+      )
+    }
   </div>
   <div class={styles.location}>{location}</div>
   <slot />

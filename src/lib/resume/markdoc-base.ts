@@ -2,7 +2,9 @@
 import Markdoc, { type Config, type Node } from "@markdoc/markdoc";
 
 const addListAttributes = (node: Node, attrs: Record<string, unknown>): void => {
-  if (!node.children.length) return;
+  if (!node.children.length) {
+    return;
+  }
   node.children.forEach((child) => {
     if (child.type === "list") {
       child.attributes = { ...child.attributes, ...attrs };

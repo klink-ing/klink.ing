@@ -7,7 +7,9 @@ interface Props {
 }
 
 const { ordered = false, listType = "bullet" } = Astro.props;
-const className = listType === "compact" ? styles.compactList : styles.bulletList;
+const className =
+  listType === "compact" ? styles.compactList : styles.bulletList;
 const Tag = ordered ? "ol" : "ul";
 ---
+
 <Tag class={className}><slot /></Tag>

@@ -15,6 +15,5 @@ jobs:
         with:
           cache: true
       - run: vp exec astro sync
-      - run: vp check
-      - run: vp test
+      - run: vp run check
       - run: vp run build

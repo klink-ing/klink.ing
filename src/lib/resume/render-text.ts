@@ -20,8 +20,12 @@ export const isTag = (node: RenderableTreeNode): node is Tag =>
  * needing parent-pointer access.
  */
 function decorateLis(node: RenderableTreeNode): RenderableTreeNode {
-  if (typeof node !== "object" || node === null) return node;
-  if (!isTag(node)) return node;
+  if (typeof node !== "object" || node === null) {
+    return node;
+  }
+  if (!isTag(node)) {
+    return node;
+  }
   if (node.name === "List") {
     const liChildren = node.children.filter((c) => isTag(c) && c.name === "li");
     const total = liChildren.length;
@@ -34,7 +38,7 @@ function decorateLis(node: RenderableTreeNode): RenderableTreeNode {
           {
             ...c.attributes,
             listType: node.attributes.listType ?? "bullet",
-            ordered: !!node.attributes.ordered,
+            ordered: Boolean(node.attributes.ordered),
             index,
             last: index === total,
           },
@@ -57,12 +61,12 @@ const joinCollapsed = (parts: string[]): string => {
   for (const next of parts) {
     if (!result) {
       result = next;
-      continue;
+    } else {
+      const trailing = result.match(/\n*$/)![0].length;
+      const leading = next.match(/^\n*/)![0].length;
+      const merged = "\n".repeat(Math.max(trailing, leading));
+      result = result.slice(0, result.length - trailing) + merged + next.slice(leading);
     }
-    const trailing = result.match(/\n*$/)![0].length;
-    const leading = next.match(/^\n*/)![0].length;
-    const merged = "\n".repeat(Math.max(trailing, leading));
-    result = result.slice(0, result.length - trailing) + merged + next.slice(leading);
   }
   return result;
 };
@@ -70,12 +74,19 @@ const joinCollapsed = (parts: string[]): string => {
 export function renderText(tree: RenderableTreeNode, opts: { components: TextComponents }): string {
   const decorated = decorateLis(tree);
   const render: TextRender = (node) => {
-    if (Array.isArray(node)) return joinCollapsed(node.map(render));
-    if (node == null || typeof node === "boolean") return "";
-    if (typeof node === "string" || typeof node === "number") return String(node);
-    if (!isTag(node)) return "";
-    const Component = opts.components[node.name];
-    if (Component) return Component(node.attributes, node.children, render);
+    if (Array.isArray(node)) {
+      return joinCollapsed(node.map(render));
+    }
+    if (typeof node === "string" || typeof node === "number") {
+      return String(node);
+    }
+    if (!isTag(node)) {
+      return "";
+    }
+    const component = opts.components[node.name];
+    if (component) {
+      return component(node.attributes, node.children, render);
+    }
     // Native HTML tag passthrough — emit children only, drop wrapper.
     return render(node.children as RenderableTreeNode[]);
   };
@@ -93,7 +104,9 @@ export function wrapItems(
   indent: string,
   lineLength: number,
 ): string {
-  if (items.length === 0) return prefix ? `${prefix}\n` : "";
+  if (items.length === 0) {
+    return prefix ? `${prefix}\n` : "";
+  }
   const lines: string[] = [];
   let current = prefix;
   for (let i = 0; i < items.length; i++) {
@@ -106,7 +119,9 @@ export function wrapItems(
       current += piece;
     }
   }
-  if (current.trimStart().length > 0) lines.push(`${current}\n`);
+  if (current.trimStart().length > 0) {
+    lines.push(`${current}\n`);
+  }
   return lines.join("");
 }
 
@@ -121,9 +136,13 @@ export function wrapWithPrefix(
   indent: string,
   lineLength: number,
 ): string {
-  if (!text) return "";
+  if (!text) {
+    return "";
+  }
   const words = text.split(/\s+/).filter((w) => w.length > 0);
-  if (words.length === 0) return "";
+  if (words.length === 0) {
+    return "";
+  }
   const lines: string[] = [];
   let currentLine = prefix;
   let isFirstLine = true;
@@ -146,6 +165,8 @@ export function wrapWithPrefix(
   const lineHasWords = isFirstLine
     ? currentLine.length > prefix.length
     : currentLine.length > indent.length;
-  if (lineHasWords) lines.push(`${currentLine}\n`);
+  if (lineHasWords) {
+    lines.push(`${currentLine}\n`);
+  }
   return lines.join("");
 }

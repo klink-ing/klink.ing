@@ -7,4 +7,5 @@ interface Props {
 
 const { class: className } = Astro.props;
 ---
-<div class={`${styles.intro}${className ? ` ${className}` : ""}`}><slot /></>
+
+<div class={`${styles.intro}${className ? ` ${className}` : ""}`}><slot /></div>

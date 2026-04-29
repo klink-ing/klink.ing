@@ -1,6 +1,6 @@
 // src/lib/resume/text-components.ts
+import { type TextComponent, isTag, wrapItems, wrapWithPrefix } from "./render-text";
 import type { RenderableTreeNode } from "@markdoc/markdoc";
-import { isTag, type TextComponent, wrapItems, wrapWithPrefix } from "./render-text";
 
 const LINE_LENGTH = 80;
 
@@ -24,7 +24,7 @@ export const Stint: TextComponent<{
       : (attrs.start ?? attrs.end ?? "").trim();
   const orgLine = `${attrs.organization.trim()}${attrs.url?.trim() ? ` (${attrs.url.trim()})` : ""}${attrs.location?.trim() ? ` - ${attrs.location.trim()}` : ""}`;
   const body = render(children).trim();
-  let tail = "\n\n\n";
+  const tail = "\n\n\n";
   return `${title ? `${title}\n` : ""}${dates ? `${dates}\n` : ""}${orgLine ? `${orgLine}\n` : ""}${body ? `\n${body}` : ""}${tail}`;
 };
 
@@ -46,9 +46,9 @@ export const SkillsSection: TextComponent = (_attrs, children, render) => {
         .map((li) => render((li as { children: RenderableTreeNode[] }).children).trim());
       out.push(`${wrapItems(heading, items, "  ", LINE_LENGTH)}\n`);
       i++;
-      continue;
+    } else {
+      out.push(render([child]));
     }
-    out.push(render([child]));
   }
   return out.join("");
 };
@@ -77,8 +77,14 @@ export const PageBreak: TextComponent = () => "";
 
 export const Heading: TextComponent<{ level: number }> = (attrs, children, render) => {
   const text = render(children).toUpperCase();
-  if (attrs.level === 4) return `${text}: `;
-  if (attrs.level === 3) return `${text}\n\n`;
-  if (attrs.level === 2) return `\n\n\n\n--- ${text} ---\n\n\n`;
+  if (attrs.level === 4) {
+    return `${text}: `;
+  }
+  if (attrs.level === 3) {
+    return `${text}\n\n`;
+  }
+  if (attrs.level === 2) {
+    return `\n\n\n\n--- ${text} ---\n\n\n`;
+  }
   return `${render(children)}\n\n`;
 };
