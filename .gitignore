@@ -44,3 +44,4 @@ dist/
 
 # Superpowers planning artifacts (kept local only)
 docs/superpowers/
+.claude/worktrees
