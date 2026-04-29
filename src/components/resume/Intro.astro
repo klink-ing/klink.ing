@@ -1,0 +1,11 @@
+---
+import styles from "@/styles/resume.module.css";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class={`${styles.intro}${className ? ` ${className}` : ""}`}><slot /></div>

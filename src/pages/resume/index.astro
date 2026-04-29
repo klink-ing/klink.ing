@@ -1,0 +1,35 @@
+---
+// src/pages/resume/index.astro
+import { getEntry, render } from "astro:content";
+import Logo from "@/components/Logo.astro";
+import MainMenu from "@/components/MainMenu.astro";
+import RootLayout from "@/layouts/RootLayout.astro";
+import styles from "@/styles/resume.module.css";
+
+const entry = await getEntry("resume", "resume");
+if (!entry) {
+  throw new Error("resume entry not found");
+}
+const { Content } = await render(entry);
+const { name, github, email } = entry.data;
+const githubUsername = github
+  .replace(/^https?:\/\/(www\.)?github\.com\//, "")
+  .replace(/\/$/, "");
+---
+
+<RootLayout title="Klink - Resumé" description="What's Klink been up to?">
+  <div class={styles.resumePage}>
+    <MainMenu />
+    <article class={styles.resume}>
+      <header>
+        <Logo class={styles.printLogo} />
+        <h1>{name}</h1>
+        <ul>
+          <li><a target="_blank" href={github}>{githubUsername}@github</a></li>
+          <li><a href={`mailto:${email}`}>{email}</a></li>
+        </ul>
+      </header>
+      <Content />
+    </article>
+  </div>
+</RootLayout>

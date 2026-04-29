@@ -14,4 +14,6 @@ jobs:
       - uses: voidzero-dev/setup-vp@v1
         with:
           cache: true
-      - run: vp check
+      - run: vp exec astro sync
+      - run: vp run check
+      - run: vp run build
