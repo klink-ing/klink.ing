@@ -1,0 +1,43 @@
+---
+import MainMenu from "@/components/MainMenu.astro";
+import RootLayout from "@/layouts/RootLayout.astro";
+import Sheet from "@/components/Sheet.astro";
+import styles from "@/styles/projects.module.css";
+
+const projects = [
+  {
+    href: "https://github.com/dogmar/squircle",
+    title: "Squircle",
+    description:
+      "Tailwind CSS v4 squircle (superellipse) corner utilities with visual radius correction.",
+  },
+  {
+    href: "https://colander.klink.ing/",
+    title: "Colander",
+    description:
+      "Accessible, customizable calendar components for React. Built on Base UI and the Temporal API.",
+  },
+];
+---
+
+<RootLayout title="Klink - Projects" description="Things Klink has built.">
+  <div class={styles.projectsPage}>
+    <MainMenu />
+    <Sheet class={styles.sheet}>
+      <ul class={styles.list}>
+        {
+          projects.map((project) => (
+            <li class={styles.project}>
+              <h2>
+                <a href={project.href} target="_blank" rel="noopener">
+                  {project.title}
+                </a>
+              </h2>
+              <p>{project.description}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </Sheet>
+  </div>
+</RootLayout>

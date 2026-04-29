@@ -22,7 +22,9 @@
     margin-top: 3em;
     list-style: none;
     text-transform: uppercase;
-    display: inline-block;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.2em;
     font-weight: var(--font-weight-heavy);
     letter-spacing: 0.1em;
     :any-link {

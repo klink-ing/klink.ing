@@ -4,6 +4,7 @@ import { getEntry, render } from "astro:content";
 import Logo from "@/components/Logo.astro";
 import MainMenu from "@/components/MainMenu.astro";
 import RootLayout from "@/layouts/RootLayout.astro";
+import Sheet from "@/components/Sheet.astro";
 import styles from "@/styles/resume.module.css";
 
 const entry = await getEntry("resume", "resume");
@@ -37,16 +38,20 @@ const githubUsername = github
         <span>PDF</span>
       </a></MainMenu
     >
-    <article class={styles.resume}>
-      <header>
-        <Logo class={styles.printLogo} />
-        <h1>{name}</h1>
-        <ul>
-          <li><a target="_blank" href={github}>{githubUsername}@github</a></li>
-          <li><a href={`mailto:${email}`}>{email}</a></li>
-        </ul>
-      </header>
-      <Content />
-    </article>
+    <Sheet>
+      <article class={styles.resume}>
+        <header>
+          <Logo class={styles.printLogo} />
+          <h1>{name}</h1>
+          <ul>
+            <li>
+              <a target="_blank" href={github}>{githubUsername}@github</a>
+            </li>
+            <li><a href={`mailto:${email}`}>{email}</a></li>
+          </ul>
+        </header>
+        <Content />
+      </article>
+    </Sheet>
   </div>
 </RootLayout>

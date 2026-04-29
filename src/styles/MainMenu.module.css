@@ -1,5 +1,10 @@
 .menu {
+  --menu-gap: 10px;
+  @media (width >= 600px) {
+    --menu-gap: 20px;
+  }
   display: flex;
+  gap: var(--menu-gap);
   justify-content: space-between;
   width: 100%;
   max-width: var(--max-width);
@@ -15,10 +20,36 @@
   & .logo {
     z-index: 1;
     width: 50%;
-    max-width: 180px;
+    max-width: min(30%, 180px);
     svg {
       margin-bottom: -12.2%;
       margin-top: -4.75%;
+    }
+  }
+
+  .navLinks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex: 1;
+    gap: var(--menu-gap);
+    align-items: baseline;
+
+    & a,
+    a:any-link {
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    & .active {
+      color: var(--color-text);
+      cursor: default;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.2em;
     }
   }
 
