@@ -44,7 +44,9 @@ const githubUsername = github
           <Logo class={styles.printLogo} />
           <h1>{name}</h1>
           <ul>
-            <li><a target="_blank" href={github}>{githubUsername}@github</a></li>
+            <li>
+              <a target="_blank" href={github}>{githubUsername}@github</a>
+            </li>
             <li><a href={`mailto:${email}`}>{email}</a></li>
           </ul>
         </header>
