@@ -22,6 +22,32 @@
     }
   }
 
+  .navLinks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex: 1;
+    gap: 1.25em;
+    align-items: baseline;
+    margin-left: 1.5em;
+
+    & a,
+    a:any-link {
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    & .active {
+      color: var(--color-link);
+      cursor: default;
+      border-bottom: 2px solid currentColor;
+      padding-bottom: 0.1em;
+    }
+  }
+
   .menuItems {
     display: flex;
     gap: 1em;
