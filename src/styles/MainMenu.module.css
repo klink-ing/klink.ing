@@ -1,5 +1,8 @@
 .menu {
   --menu-gap: 10px;
+  @media (width >= 600px) {
+    --menu-gap: 20px;
+  }
   display: flex;
   gap: var(--menu-gap);
   justify-content: space-between;
