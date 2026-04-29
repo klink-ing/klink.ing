@@ -19,6 +19,7 @@ async function startDevServer(): Promise<{ url: string; stop: () => Promise<void
     cwd: repoRoot,
     stdio: ["ignore", "pipe", "pipe"],
     env: { ...process.env, FORCE_COLOR: "0", NO_COLOR: "1" },
+    detached: true,
   });
 
   const url = await new Promise<string>((resolve, reject) => {
@@ -47,13 +48,23 @@ async function startDevServer(): Promise<{ url: string; stop: () => Promise<void
     );
   });
 
+  const killGroup = (signal: NodeJS.Signals) => {
+    try {
+      process.kill(-proc.pid!, signal);
+    } catch {
+      // group may already be gone
+    }
+  };
+
   return {
     url,
     stop: () =>
       new Promise<void>((resolve) => {
         proc.once("exit", () => resolve());
-        proc.kill("SIGTERM");
-        setTimeout(() => proc.kill("SIGKILL"), 5000).unref();
+        killGroup("SIGTERM");
+        proc.stdout?.destroy();
+        proc.stderr?.destroy();
+        setTimeout(() => killGroup("SIGKILL"), 5000).unref();
       }),
   };
 }
