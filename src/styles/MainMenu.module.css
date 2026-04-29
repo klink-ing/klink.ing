@@ -17,7 +17,7 @@
   & .logo {
     z-index: 1;
     width: 50%;
-    max-width: 30%;
+    max-width: min(30%, 180px);
     svg {
       margin-bottom: -12.2%;
       margin-top: -4.75%;
