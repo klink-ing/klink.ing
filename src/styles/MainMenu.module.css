@@ -1,5 +1,7 @@
 .menu {
+  --menu-gap: 10px;
   display: flex;
+  gap: var(--menu-gap);
   justify-content: space-between;
   width: 100%;
   max-width: var(--max-width);
@@ -28,9 +30,8 @@
     padding: 0;
     display: flex;
     flex: 1;
-    gap: 1.25em;
+    gap: var(--menu-gap);
     align-items: baseline;
-    margin-left: 1.5em;
 
     & a,
     a:any-link {
