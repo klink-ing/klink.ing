@@ -82,11 +82,26 @@ div {
 
 a,
 a:any-link {
+  position: relative;
   color: var(--color-link, inherit);
   text-decoration: underline;
   text-decoration-line: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
+  text-underline-offset: 0.1em;
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -0.15em;
+    right: -0.15em;
+    border-radius: 0.2em;
+    outline: 2px solid var(--color-link);
+  }
 }
 
 @media (prefers-color-scheme: dark) {

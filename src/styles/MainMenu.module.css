@@ -17,13 +17,20 @@
   & > * {
     align-self: baseline;
   }
-  & .logo {
+  & a.logo,
+  & a:any-link.logo {
     z-index: 1;
     width: 50%;
     max-width: min(30%, 180px);
     svg {
       margin-bottom: -12.2%;
       margin-top: -4.75%;
+    }
+    &:focus-visible::after {
+      left: -2%;
+      right: -2%;
+      top: -30%;
+      bottom: -70%;
     }
   }
 
@@ -40,7 +47,8 @@
     a:any-link {
       text-decoration: none;
       &:hover {
-        text-decoration: underline;
+        text-decoration-line: underline;
+        text-decoration-thickness: 1px;
       }
     }
 
