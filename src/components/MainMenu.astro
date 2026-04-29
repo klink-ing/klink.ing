@@ -5,5 +5,7 @@ import styles from "@/styles/MainMenu.module.css";
 
 <nav class={styles.menu}>
   <a class={styles.logo} href="/"><Logo /></a>
-  <a href="/resume">Resumé</a>
+  <div class={styles.menuItems}>
+    <slot />
+  </div>
 </nav>

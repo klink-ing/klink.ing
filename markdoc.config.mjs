@@ -21,6 +21,10 @@ export default defineMarkdocConfig({
       ...baseConfig.tags.pageBreak,
       render: component("./src/components/resume/PageBreak.astro"),
     },
+    nobreak: {
+      ...baseConfig.tags.nobreak,
+      render: component("./src/components/resume/NoBreak.astro"),
+    },
   },
   nodes: {
     list: {

@@ -24,3 +24,6 @@ minimumReleaseAgeExclude:
   - "@oxlint-tsgolint/*"
   - oxfmt
   - "@oxfmt/*"
+onlyBuiltDependencies:
+  - esbuild
+  - puppeteer
