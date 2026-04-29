@@ -41,10 +41,11 @@
     }
 
     & .active {
-      color: var(--color-link);
+      color: var(--color-text);
       cursor: default;
-      border-bottom: 2px solid currentColor;
-      padding-bottom: 0.1em;
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 0.2em;
     }
   }
 
