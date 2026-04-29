@@ -61,6 +61,7 @@
   }
 
   text-wrap: pretty;
+  position: relative;
 
   background-color: white;
 
@@ -334,5 +335,19 @@
     a:any-link {
       text-decoration: none;
     }
+  }
+}
+
+a:any-link.pdfLink {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  font-size: 0.85em;
+
+  & svg {
+    position: relative;
+    width: 1em;
+    height: 1em;
+    top: 0.15em;
   }
 }
