@@ -2,9 +2,15 @@
   --max-width: 800px;
 }
 
+.sheet {
+  --sheet-h-padding: calc(var(--v-space) * 0.5);
+}
+
 .list {
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
   list-style: none;
-  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;

@@ -1,8 +1,4 @@
 .sheet {
-  --sheet-h-padding: calc(var(--v-space) * 1);
-  --sheet-t-padding: 60px;
-  --sheet-b-padding: 60px;
-
   position: relative;
   background-color: white;
   max-width: var(--max-width);
@@ -12,6 +8,12 @@
   padding-right: var(--sheet-h-padding);
   padding-top: var(--sheet-t-padding);
   padding-bottom: var(--sheet-b-padding);
+}
+
+:where(.sheet) {
+  --sheet-h-padding: calc(var(--v-space) * 1);
+  --sheet-t-padding: 60px;
+  --sheet-b-padding: 60px;
 
   @media (width >= 375px) {
     --sheet-h-padding: calc(var(--v-space) * 2);
