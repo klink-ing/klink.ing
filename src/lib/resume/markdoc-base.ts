@@ -41,6 +41,7 @@ export const baseConfig: Config = {
       },
     },
     pageBreak: { render: "PageBreak", attributes: {}, selfClosing: true },
+    nobreak: { render: "NoBreak", attributes: {} },
   },
   nodes: {
     list: {

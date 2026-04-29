@@ -37,9 +37,6 @@ const stintClassName = [
 ]
   .filter(Boolean)
   .join(" ");
-
-// No-break date ranges: only the \d+–\d+ pattern needs the noBreak class.
-const isRange = (s: string | undefined) => Boolean(s) && /^\d+–\d+$/.test(s);
 ---
 
 <div class={stintClassName}>
@@ -57,13 +54,9 @@ const isRange = (s: string | undefined) => Boolean(s) && /^\d+–\d+$/.test(s);
       }
     </h3>
     <div style="white-space: nowrap" class={styles.dates}>
-      {
-        start && (
-          <span class={isRange(start) ? styles.noBreak : ""}>{start}</span>
-        )
-      }
+      {start}
       {start && end && <Fragment> – </Fragment>}
-      {end && <span class={isRange(end) ? styles.noBreak : ""}>{end}</span>}
+      {end}
     </div>
   </div>
   <div class={styles.organization}>
