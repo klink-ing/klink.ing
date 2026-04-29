@@ -1,0 +1,30 @@
+.sheet {
+  --sheet-h-padding: calc(var(--v-space) * 1);
+  --sheet-t-padding: 60px;
+  --sheet-b-padding: 60px;
+
+  position: relative;
+  background-color: white;
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--sheet-h-padding);
+  padding-right: var(--sheet-h-padding);
+  padding-top: var(--sheet-t-padding);
+  padding-bottom: var(--sheet-b-padding);
+
+  @media (width >= 375px) {
+    --sheet-h-padding: calc(var(--v-space) * 2);
+  }
+
+  @media (width >= 600px) {
+    --sheet-h-padding: calc(var(--v-space) * 4);
+  }
+
+  @media print {
+    --sheet-h-padding: 0;
+    --sheet-t-padding: 0;
+    --sheet-b-padding: 0;
+    --max-width: var(--print-max-width);
+  }
+}

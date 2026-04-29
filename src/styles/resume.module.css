@@ -15,10 +15,6 @@
 }
 
 .resume {
-  --resume-h-padding: calc(var(--v-space) * 1);
-  --resume-t-padding: 60px;
-  --resume-b-padding: 60px;
-
   --h1-size: calc(var(--font-body-size) * 1);
   --h2-size: calc(var(--font-body-size) * 2);
   --h3-size: calc(var(--font-body-size) * 1.5);
@@ -37,41 +33,17 @@
     --h3-size: calc(var(--font-body-size) * 1.8);
   }
 
-  @media (width >= 375px) {
-    --resume-h-padding: calc(var(--v-space) * 2);
-  }
-
-  @media (width >= 600px) {
-    --resume-h-padding: calc(var(--v-space) * 4);
-  }
-
   @media print {
     --font-body-size: 13.5px;
     --h1-size: calc(var(--font-body-size) * 1);
     --h2-size: calc(var(--font-body-size) * 1.75);
     --h3-size: calc(var(--font-body-size) * 1.25);
     --h4-size: 1em;
-    --resume-h-padding: 0;
-    --resume-t-padding: 0;
-    --resume-b-padding: 0;
-    --resume-t-padding: 0;
-    --max-width: var(--print-max-width);
     font-size: var(--font-body-size);
     line-height: 1.4em;
   }
 
   text-wrap: pretty;
-  position: relative;
-
-  background-color: white;
-
-  max-width: var(--max-width);
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--resume-h-padding);
-  padding-right: var(--resume-h-padding);
-  padding-top: var(--resume-t-padding);
-  padding-bottom: var(--resume-b-padding);
 
   ul {
     list-style: none;

@@ -1,0 +1,13 @@
+---
+import styles from "@/styles/Sheet.module.css";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={[styles.sheet, className]}>
+  <slot />
+</div>
