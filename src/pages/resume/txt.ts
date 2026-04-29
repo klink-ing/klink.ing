@@ -3,6 +3,7 @@ import * as components from "@/lib/resume/text-components";
 import { type TextComponents, renderText } from "@/lib/resume/render-text";
 import Markdoc from "@markdoc/markdoc";
 import { baseConfig } from "@/lib/resume/markdoc-base";
+import { downloadHeaders } from "@/lib/resume/download";
 import { getEntry } from "astro:content";
 
 export const prerender = true;
@@ -35,5 +36,5 @@ export async function GET() {
   const header = `${name}\n${github}\n${email}\n`;
   const body = renderText(tree, { components: components as unknown as TextComponents });
   const content = `${(header + body).trim()}\n`;
-  return new Response(content);
+  return new Response(content, { headers: downloadHeaders("txt") });
 }

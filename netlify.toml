@@ -2,11 +2,8 @@
 command = "pnpm build"
 publish = "dist"
 
-[[headers]]
-for = "/resume/txt"
-[headers.values]
-Content-Type = "text/plain; charset=UTF-8"
-Content-Disposition = 'attachment; filename="chris-klink-resume.txt"'
+# Resume download headers (Content-Type + Content-Disposition) are emitted to
+# dist/_headers by the resumeHeaders Astro integration in astro.config.mjs.
 
 # Redirect www to apex domain
 [[redirects]]
