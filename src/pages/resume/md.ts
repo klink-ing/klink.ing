@@ -4,6 +4,7 @@ import { type TextComponents, renderText } from "@/lib/resume/render-text";
 import Markdoc from "@markdoc/markdoc";
 import { baseConfig } from "@/lib/resume/markdoc-base";
 import { getEntry } from "astro:content";
+import prettier from "prettier";
 
 export const prerender = true;
 
@@ -32,7 +33,7 @@ export async function GET() {
   const githubUsername = github.replace(/^https?:\/\/(www\.)?github\.com\//, "").replace(/\/$/, "");
   const header = `# ${name}\n\n- [${githubUsername}@github](${github})\n- [${email}](mailto:${email})`;
   const body = renderText(tree, { components: components as unknown as TextComponents });
-  const content = `${(header + body).trim()}\n`;
+  const content = await prettier.format(`${(header + body).trim()}\n`, { parser: "markdown" });
   return new Response(content, {
     headers: { "Content-Type": "text/markdown; charset=utf-8" },
   });
