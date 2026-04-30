@@ -36,22 +36,11 @@ import { podman } from "@ai-hero/sandcastle/sandboxes/podman";
 // Raise this if your backlog is large; lower it for a quick smoke-test run.
 const MAX_ITERATIONS = 10;
 
-// Warm up Claude Code so the user's interactive session doesn't trip the
-// first-run onboarding wizard. CLAUDE_CODE_OAUTH_TOKEN authenticates the
-// API call, but ~/.claude.json (Claude's state file) is only populated
-// after the first real claude invocation; without this warmup the
-// container's fresh $HOME causes the TUI to show setup prompts.
-// Haiku is the cheapest model and the prompt is intentionally trivial.
-const claudeWarmup = {
-  command:
-    "echo init | claude --print --model claude-haiku-4-5 --output-format text -p - > /dev/null",
-};
-
 // Hooks run inside the sandbox before the agent starts each iteration.
 // vp install ensures the sandbox always has fresh dependencies. Vite+ wraps
 // the project's package manager (pnpm here) and understands pnpm catalogs.
 const hooks = {
-  sandbox: { onSandboxReady: [{ command: "vp install" }, claudeWarmup] },
+  sandbox: { onSandboxReady: [{ command: "vp install" }] },
 };
 
 // Copy node_modules from the host into the worktree before each sandbox

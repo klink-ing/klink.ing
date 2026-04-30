@@ -28,8 +28,9 @@
 
 import * as sandcastle from "@ai-hero/sandcastle";
 
-import { createWriteStream, existsSync, mkdirSync, readFileSync } from "node:fs";
+import { createWriteStream, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { podman } from "@ai-hero/sandcastle/sandboxes/podman";
 import process from "node:process";
@@ -41,29 +42,51 @@ import { spawn } from "node:child_process";
 
 const DEV_PORT = 4321;
 
-// Warm up Claude Code so the user's interactive session doesn't trip the
-// first-run onboarding wizard. CLAUDE_CODE_OAUTH_TOKEN authenticates the
-// API call, but ~/.claude.json (Claude's state file) is only populated
-// after the first real claude invocation; without this warmup the
-// container's fresh $HOME causes the TUI to show setup prompts.
-// Haiku is the cheapest model and the prompt is intentionally trivial.
-const claudeWarmup = {
-  command:
-    "echo init | claude --print --model claude-haiku-4-5 --output-format text -p - > /dev/null",
-};
-
-// Phase 2 hooks: Vite+ install (project deps) + Claude warmup.
+// Phase 2 hooks: vp install — Vite+ wraps the project's package manager
+// (pnpm) and understands pnpm catalogs, which `npm install` doesn't.
 const hooks = {
-  sandbox: { onSandboxReady: [{ command: "vp install" }, claudeWarmup] },
+  sandbox: { onSandboxReady: [{ command: "vp install" }] },
 };
 
-// Phase 1 / Phase 3 hooks: only Claude warmup. We deliberately skip
-// `vp install` for these phases — the dev server runs on the host
-// against the bind-mounted worktree, so the worktree's node_modules
-// must stay macOS-compatible (a sandbox-side `vp install` would
-// replace it with Linux native bindings).
-const interactiveHooks = {
-  sandbox: { onSandboxReady: [claudeWarmup] },
+// Mount the host's Claude Code state into every container so the in-container
+// claude inherits the user's already-completed onboarding, trusted folders,
+// theme, plugins, etc. — and writes session/project state back to the host.
+// This avoids the first-run TUI prompts that fresh containers would otherwise
+// show even with CLAUDE_CODE_OAUTH_TOKEN set.
+const claudeStateMounts = [
+  { hostPath: "~/.claude", sandboxPath: "~/.claude" },
+  { hostPath: "~/.claude.json", sandboxPath: "~/.claude.json" },
+];
+
+const sandboxProvider = () => podman({ mounts: claudeStateMounts });
+
+// Sandcastle bind-mounts the worktree to /home/agent/workspace inside the
+// container — but the host has never opened that path in claude, so the
+// mounted ~/.claude.json doesn't list it as a trusted project. Without
+// pre-trusting it, the interactive TUI shows "Is this a project you trust?"
+// for every fresh sandbox. This idempotently adds the container-internal
+// workspace path to the host's trusted-projects list.
+interface ClaudeJson {
+  projects?: Record<string, { hasTrustDialogAccepted?: boolean } | undefined>;
+}
+
+const ensureSandboxWorkspaceTrusted = () => {
+  const claudeJsonPath = join(homedir(), ".claude.json");
+  if (!existsSync(claudeJsonPath)) {
+    return;
+  }
+  const content: ClaudeJson = JSON.parse(readFileSync(claudeJsonPath, "utf8"));
+  const projects = content.projects ?? {};
+  const sandboxPath = "/home/agent/workspace";
+  if (projects[sandboxPath]?.hasTrustDialogAccepted === true) {
+    return;
+  }
+  projects[sandboxPath] = {
+    ...projects[sandboxPath],
+    hasTrustDialogAccepted: true,
+  };
+  content.projects = projects;
+  writeFileSync(claudeJsonPath, JSON.stringify(content, undefined, 2));
 };
 
 // Copy node_modules from the host into the worktree before sandbox start
@@ -127,18 +150,18 @@ interface Plan {
 // Phase 1: Interactive Plan
 // ---------------------------------------------------------------------------
 
+ensureSandboxWorkspaceTrusted();
+
 const planBranch = `sandcastle/plan-${ts()}`;
 console.log(`\n=== Phase 1: Interactive Plan ===\n`);
 console.log(`Planning branch: ${planBranch}`);
 
 const planSandbox = await sandcastle.createSandbox({
   branch: planBranch,
-  sandbox: podman(),
-  // interactiveHooks: only the Claude warmup (no vp install). Skipping
-  // vp install keeps the host-side dev server's node_modules
-  // macOS-compatible; the warmup populates ~/.claude.json so the TUI
-  // doesn't start with onboarding prompts.
-  hooks: interactiveHooks,
+  sandbox: sandboxProvider(),
+  // No install hook here — the host runs `vp dev` against the bind-mounted
+  // worktree, so the worktree's node_modules must stay macOS-compatible.
+  // (The host's mounted ~/.claude state means no warmup is needed either.)
   copyToWorktree,
 });
 
@@ -199,7 +222,7 @@ const settled = await Promise.allSettled(
   plan.issues.map(async (issue) => {
     const sandbox = await sandcastle.createSandbox({
       branch: issue.branch,
-      sandbox: podman(),
+      sandbox: sandboxProvider(),
       hooks,
       copyToWorktree,
     });
@@ -290,12 +313,9 @@ const integrationBranch = `sandcastle/feature-${plan.featureSlug}-${ts()}`;
 const prSandbox = await sandcastle.createSandbox({
   branch: integrationBranch,
   baseBranch: "main",
-  sandbox: podman(),
-  // interactiveHooks: only Claude warmup (no vp install). The host runs
-  // `vp dev` against the bind-mounted worktree, so the worktree's
-  // node_modules must stay macOS-compatible. The warmup pre-populates
-  // ~/.claude.json so the feedback session opens without onboarding.
-  hooks: interactiveHooks,
+  sandbox: sandboxProvider(),
+  // No install hook — the host runs `vp dev` against the bind-mounted
+  // worktree, so the worktree's node_modules must stay macOS-compatible.
   copyToWorktree,
 });
 
