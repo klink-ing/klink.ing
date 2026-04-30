@@ -10,7 +10,8 @@
     "fix": "vp check --fix && vp exec prettier --write --plugin=prettier-plugin-astro \"**/*.astro\"",
     "resume:pdf": "tsx scripts/generate-resume-pdf.ts",
     "prepare": "vp config",
-    "sandcastle": "npx tsx .sandcastle/main.mts"
+    "sandcastle": "npx tsx .sandcastle/main.mts",
+    "plan": "npx tsx .sandcastle/plan.mts"
   },
   "dependencies": {
     "@astrojs/markdoc": "^1.0.4",
