@@ -21,6 +21,10 @@
 // Or add to package.json:
 //   "scripts": { "sandcastle": "npx tsx .sandcastle/main.mts" }
 
+/* eslint-disable no-await-in-loop, no-continue */
+// The orchestration loop is intentionally serial: each iteration's plan
+// depends on the prior iteration's merges, and merge runs after execute.
+
 import * as sandcastle from "@ai-hero/sandcastle";
 import { docker } from "@ai-hero/sandcastle/sandboxes/docker";
 
@@ -33,9 +37,10 @@ import { docker } from "@ai-hero/sandcastle/sandboxes/docker";
 const MAX_ITERATIONS = 10;
 
 // Hooks run inside the sandbox before the agent starts each iteration.
-// npm install ensures the sandbox always has fresh dependencies.
+// vp install ensures the sandbox always has fresh dependencies. Vite+ wraps
+// the project's package manager (pnpm here) and understands pnpm catalogs.
 const hooks = {
-  sandbox: { onSandboxReady: [{ command: "npm install" }] },
+  sandbox: { onSandboxReady: [{ command: "vp install" }] },
 };
 
 // Copy node_modules from the host into the worktree before each sandbox
@@ -60,9 +65,16 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
   // It outputs a <plan> JSON block — we parse that to drive Phase 2.
   // -------------------------------------------------------------------------
   const plan = await sandcastle.run({
-    hooks,
+    // Skip dependency install for the planner: it only runs `gh issue list`
+    // and reasons over the result, so node_modules isn't needed. Skipping
+    // also avoids hitting the 60s hook timeout on a fresh temp worktree.
     sandbox: docker(),
     name: "planner",
+    // Use a temp-branch worktree instead of bind-mounting the host repo.
+    // The default "head" strategy would cause the in-container `vp install`
+    // hook to rewrite the host's node_modules with Linux native bindings,
+    // breaking macOS host tooling until the next host-side `vp install`.
+    branchStrategy: { type: "merge-to-head" },
     // One iteration is enough: the planner just needs to read and reason,
     // not write code.
     maxIterations: 1,
@@ -72,17 +84,16 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
   });
 
   // Extract the <plan>…</plan> block from the agent's stdout.
-  const planMatch = plan.stdout.match(/<plan>([\s\S]*?)<\/plan>/);
+  const planMatch = /<plan>([\s\S]*?)<\/plan>/.exec(plan.stdout);
   if (!planMatch) {
-    throw new Error(
-      "Planning agent did not produce a <plan> tag.\n\n" + plan.stdout,
-    );
+    throw new Error(`Planning agent did not produce a <plan> tag.\n\n${plan.stdout}`);
   }
 
   // The plan JSON contains an array of issues, each with id, title, branch.
-  const { issues } = JSON.parse(planMatch[1]!) as {
-    issues: { id: string; title: string; branch: string }[];
-  };
+  const planJson: { issues: { id: string; title: string; branch: string }[] } = JSON.parse(
+    planMatch[1] ?? "",
+  );
+  const { issues } = planJson;
 
   if (issues.length === 0) {
     // No unblocked work — either everything is done or everything is blocked.
@@ -90,9 +101,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     break;
   }
 
-  console.log(
-    `Planning complete. ${issues.length} issue(s) to work in parallel:`,
-  );
+  console.log(`Planning complete. ${issues.length} issue(s) to work in parallel:`);
   for (const issue of issues) {
     console.log(`  ${issue.id}: ${issue.title} → ${issue.branch}`);
   }
@@ -160,28 +169,22 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
   // Log any agents that threw (network error, sandbox crash, etc.).
   for (const [i, outcome] of settled.entries()) {
     if (outcome.status === "rejected") {
-      console.error(
-        `  ✗ ${issues[i]!.id} (${issues[i]!.branch}) failed: ${outcome.reason}`,
-      );
+      console.error(`  ✗ ${issues[i].id} (${issues[i].branch}) failed: ${outcome.reason}`);
     }
   }
 
   // Only pass branches that actually produced commits to the merge phase.
   // An agent that ran successfully but made no commits has nothing to merge.
   const completedIssues = settled
-    .map((outcome, i) => ({ outcome, issue: issues[i]! }))
+    .map((outcome, i) => ({ outcome, issue: issues[i] }))
     .filter(
-      (entry) =>
-        entry.outcome.status === "fulfilled" &&
-        entry.outcome.value.commits.length > 0,
+      (entry) => entry.outcome.status === "fulfilled" && entry.outcome.value.commits.length > 0,
     )
     .map((entry) => entry.issue);
 
   const completedBranches = completedIssues.map((i) => i.branch);
 
-  console.log(
-    `\nExecution complete. ${completedBranches.length} branch(es) with commits:`,
-  );
+  console.log(`\nExecution complete. ${completedBranches.length} branch(es) with commits:`);
   for (const branch of completedBranches) {
     console.log(`  ${branch}`);
   }
@@ -212,9 +215,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
       // A markdown list of branch names, one per line.
       BRANCHES: completedBranches.map((b) => `- ${b}`).join("\n"),
       // A markdown list of issue IDs and titles, one per line.
-      ISSUES: completedIssues
-        .map((i) => `- ${i.id}: ${i.title}`)
-        .join("\n"),
+      ISSUES: completedIssues.map((i) => `- ${i.id}: ${i.title}`).join("\n"),
     },
   });
 

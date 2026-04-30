@@ -15,17 +15,30 @@ RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg \
   && apt-get update && apt-get install -y gh \
   && rm -rf /var/lib/apt/lists/*
 
-# Rename the base image's "node" user (UID 1000) to "agent".
-# This keeps UID 1000 so that --userns=keep-id (Podman) and
-# --user 1000:1000 (Docker) map to the correct home directory owner.
+# Rename the base image's "node" user (UID 1000) to "agent". Sandcastle's
+# docker provider runs the container as the *host* UID/GID (e.g. 502:20 on
+# macOS), not 1000:1000, so /home/agent must be writable for arbitrary UIDs —
+# we chmod after all agent-owned installs below.
 RUN usermod -d /home/agent -m -l agent node
 USER agent
 
 # Install Claude Code CLI
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
-# Add Claude to PATH
-ENV PATH="/home/agent/.local/bin:$PATH"
+# Install Vite+ (vp). VP_NODE_MANAGER=no skips the interactive prompt and tells
+# the installer not to manage its own Node (we use the base image's Node 22).
+RUN curl -fsSL https://vite.plus | VP_NODE_MANAGER=no bash
+
+# Make the entire home directory world-writable so the container — which runs
+# as the host UID, not 1000 — can write npm/pnpm/git/Claude state at runtime.
+# Must run after the installers above so newly created files are also chmod'd.
+RUN chmod -R 0777 /home/agent
+
+# Add Claude and Vite+ to PATH. CI=true tells pnpm (wrapped by Vite+) to run
+# non-interactively — it lets pnpm purge a stale node_modules (copied from the
+# host) instead of aborting on missing TTY.
+ENV PATH="/home/agent/.local/bin:/home/agent/.vite-plus/bin:$PATH" \
+    CI=true
 
 WORKDIR /home/agent
 
