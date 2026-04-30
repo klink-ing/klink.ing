@@ -41,10 +41,29 @@ import { spawn } from "node:child_process";
 
 const DEV_PORT = 4321;
 
-// Hooks run inside the sandbox before each agent iteration. `vp install`
-// understands the project's pnpm catalogs.
+// Warm up Claude Code so the user's interactive session doesn't trip the
+// first-run onboarding wizard. CLAUDE_CODE_OAUTH_TOKEN authenticates the
+// API call, but ~/.claude.json (Claude's state file) is only populated
+// after the first real claude invocation; without this warmup the
+// container's fresh $HOME causes the TUI to show setup prompts.
+// Haiku is the cheapest model and the prompt is intentionally trivial.
+const claudeWarmup = {
+  command:
+    "echo init | claude --print --model claude-haiku-4-5 --output-format text -p - > /dev/null",
+};
+
+// Phase 2 hooks: Vite+ install (project deps) + Claude warmup.
 const hooks = {
-  sandbox: { onSandboxReady: [{ command: "vp install" }] },
+  sandbox: { onSandboxReady: [{ command: "vp install" }, claudeWarmup] },
+};
+
+// Phase 1 / Phase 3 hooks: only Claude warmup. We deliberately skip
+// `vp install` for these phases — the dev server runs on the host
+// against the bind-mounted worktree, so the worktree's node_modules
+// must stay macOS-compatible (a sandbox-side `vp install` would
+// replace it with Linux native bindings).
+const interactiveHooks = {
+  sandbox: { onSandboxReady: [claudeWarmup] },
 };
 
 // Copy node_modules from the host into the worktree before sandbox start
@@ -115,8 +134,11 @@ console.log(`Planning branch: ${planBranch}`);
 const planSandbox = await sandcastle.createSandbox({
   branch: planBranch,
   sandbox: podman(),
-  // No install hook here — dev server runs on the host, and skipping the
-  // 60s hook on a fresh worktree gets the user into Claude immediately.
+  // interactiveHooks: only the Claude warmup (no vp install). Skipping
+  // vp install keeps the host-side dev server's node_modules
+  // macOS-compatible; the warmup populates ~/.claude.json so the TUI
+  // doesn't start with onboarding prompts.
+  hooks: interactiveHooks,
   copyToWorktree,
 });
 
@@ -269,9 +291,11 @@ const prSandbox = await sandcastle.createSandbox({
   branch: integrationBranch,
   baseBranch: "main",
   sandbox: podman(),
-  // No install hook — the host runs `vp dev` against the bind-mounted
-  // worktree, so the worktree's node_modules must stay macOS-compatible
-  // (sandbox-side `vp install` would replace it with Linux bindings).
+  // interactiveHooks: only Claude warmup (no vp install). The host runs
+  // `vp dev` against the bind-mounted worktree, so the worktree's
+  // node_modules must stay macOS-compatible. The warmup pre-populates
+  // ~/.claude.json so the feedback session opens without onboarding.
+  hooks: interactiveHooks,
   copyToWorktree,
 });
 
