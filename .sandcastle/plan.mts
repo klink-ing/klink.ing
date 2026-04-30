@@ -30,8 +30,8 @@ import * as sandcastle from "@ai-hero/sandcastle";
 
 import { createWriteStream, existsSync, mkdirSync, readFileSync } from "node:fs";
 
-import { docker } from "@ai-hero/sandcastle/sandboxes/docker";
 import { join } from "node:path";
+import { podman } from "@ai-hero/sandcastle/sandboxes/podman";
 import process from "node:process";
 import { spawn } from "node:child_process";
 
@@ -114,7 +114,7 @@ console.log(`Planning branch: ${planBranch}`);
 
 const planSandbox = await sandcastle.createSandbox({
   branch: planBranch,
-  sandbox: docker(),
+  sandbox: podman(),
   // No install hook here — dev server runs on the host, and skipping the
   // 60s hook on a fresh worktree gets the user into Claude immediately.
   copyToWorktree,
@@ -177,7 +177,7 @@ const settled = await Promise.allSettled(
   plan.issues.map(async (issue) => {
     const sandbox = await sandcastle.createSandbox({
       branch: issue.branch,
-      sandbox: docker(),
+      sandbox: podman(),
       hooks,
       copyToWorktree,
     });
@@ -268,7 +268,7 @@ const integrationBranch = `sandcastle/feature-${plan.featureSlug}-${ts()}`;
 const prSandbox = await sandcastle.createSandbox({
   branch: integrationBranch,
   baseBranch: "main",
-  sandbox: docker(),
+  sandbox: podman(),
   // No install hook — the host runs `vp dev` against the bind-mounted
   // worktree, so the worktree's node_modules must stay macOS-compatible
   // (sandbox-side `vp install` would replace it with Linux bindings).

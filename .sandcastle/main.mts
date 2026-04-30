@@ -26,7 +26,7 @@
 // depends on the prior iteration's merges, and merge runs after execute.
 
 import * as sandcastle from "@ai-hero/sandcastle";
-import { docker } from "@ai-hero/sandcastle/sandboxes/docker";
+import { podman } from "@ai-hero/sandcastle/sandboxes/podman";
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -68,7 +68,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     // Skip dependency install for the planner: it only runs `gh issue list`
     // and reasons over the result, so node_modules isn't needed. Skipping
     // also avoids hitting the 60s hook timeout on a fresh temp worktree.
-    sandbox: docker(),
+    sandbox: podman(),
     name: "planner",
     // Use a temp-branch worktree instead of bind-mounting the host repo.
     // The default "head" strategy would cause the in-container `vp install`
@@ -120,7 +120,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
     issues.map(async (issue) => {
       const sandbox = await sandcastle.createSandbox({
         branch: issue.branch,
-        sandbox: docker(),
+        sandbox: podman(),
         hooks,
         copyToWorktree,
       });
@@ -206,7 +206,7 @@ for (let iteration = 1; iteration <= MAX_ITERATIONS; iteration++) {
   // -------------------------------------------------------------------------
   await sandcastle.run({
     hooks,
-    sandbox: docker(),
+    sandbox: podman(),
     name: "merger",
     maxIterations: 1,
     agent: sandcastle.claudeCode("claude-opus-4-6"),
