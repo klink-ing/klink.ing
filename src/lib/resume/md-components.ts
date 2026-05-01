@@ -55,21 +55,16 @@ export const SkillsSection: TextComponent = (_attrs, children, render) => {
   return out.join("");
 };
 
-export const List: TextComponent<{ listType?: "bullet" | "compact" }> = (attrs, children, render) =>
+export const List: TextComponent = (attrs, children, render) =>
   attrs.listType === "compact" ? `${render(children)}\n\n` : `${render(children)}\n`;
 
-export const li: TextComponent<{
-  listType?: "bullet" | "compact";
-  ordered?: boolean;
-  index?: number;
-  last?: boolean;
-}> = (attrs, children, render) => {
+export const li: TextComponent = (attrs, children, render) => {
   const text = render(children).trim().replace(/\s+/g, " ");
   if (attrs.listType === "compact") {
     return attrs.last ? text : `${text}, `;
   }
   if (attrs.ordered) {
-    return `${attrs.index}. ${text}\n`;
+    return `${String(attrs.index)}. ${text}\n`;
   }
   return `- ${text}\n`;
 };
