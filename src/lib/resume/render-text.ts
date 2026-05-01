@@ -50,11 +50,7 @@ function decorateLis(node: RenderableTreeNode): RenderableTreeNode {
     });
     return new Markdoc.Tag(node.name, node.attributes, newChildren);
   }
-  return new Markdoc.Tag(
-    node.name,
-    node.attributes,
-    node.children.map(decorateLis),
-  );
+  return new Markdoc.Tag(node.name, node.attributes, node.children.map(decorateLis));
 }
 
 const joinCollapsed = (parts: string[]): string => {

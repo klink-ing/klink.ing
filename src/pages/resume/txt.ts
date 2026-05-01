@@ -1,10 +1,10 @@
 // src/pages/resume/txt.ts
 import * as components from "@/lib/resume/text-components";
-import { renderText } from "@/lib/resume/render-text";
 import Markdoc from "@markdoc/markdoc";
 import { baseConfig } from "@/lib/resume/markdoc-base";
 import { downloadHeaders } from "@/lib/resume/download";
 import { getEntry } from "astro:content";
+import { renderText } from "@/lib/resume/render-text";
 
 export const prerender = true;
 

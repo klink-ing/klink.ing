@@ -19,7 +19,6 @@ export default defineConfig({
       "max-statements": "off",
       "max-params": "off",
       "no-ternary": "off",
-      "typescript-eslint/no-unnecessary-type-arguments": "off",
     },
     options: {
       typeAware: true,

@@ -1,11 +1,11 @@
 // src/pages/resume/md.ts
 import * as components from "@/lib/resume/md-components";
-import { renderText } from "@/lib/resume/render-text";
 import Markdoc from "@markdoc/markdoc";
 import { baseConfig } from "@/lib/resume/markdoc-base";
 import { downloadHeaders } from "@/lib/resume/download";
 import { getEntry } from "astro:content";
 import prettier from "prettier";
+import { renderText } from "@/lib/resume/render-text";
 
 export const prerender = true;
 

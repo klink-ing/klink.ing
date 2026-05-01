@@ -1,6 +1,6 @@
 // src/lib/resume/md-components.ts
+import type { RenderableTreeNode, Tag } from "@markdoc/markdoc";
 import { type TextComponent, isTag } from "./render-text";
-import type { RenderableTreeNode } from "@markdoc/markdoc";
 
 export const Intro: TextComponent = (_attrs, children, render) => {
   const text = render(children).trim();
@@ -32,8 +32,7 @@ export const Stint: TextComponent<{
 const isNamed = (node: RenderableTreeNode, name: string) => isTag(node) && node.name === name;
 
 const isH4 = (node: RenderableTreeNode) =>
-  isNamed(node, "h4") ||
-  (isNamed(node, "Heading") && isTag(node) && node.attributes.level === 4);
+  isNamed(node, "h4") || (isNamed(node, "Heading") && isTag(node) && node.attributes.level === 4);
 
 export const SkillsSection: TextComponent = (_attrs, children, render) => {
   const out: string[] = [];
@@ -45,7 +44,7 @@ export const SkillsSection: TextComponent = (_attrs, children, render) => {
         .trim()
         .replace(/^#+\s*/, "");
       const items = next.children
-        .filter((c): c is import("@markdoc/markdoc").Tag => isNamed(c, "li") && isTag(c))
+        .filter((c): c is Tag => isNamed(c, "li") && isTag(c))
         .map((li) => render(li.children).trim());
       out.push(`**${heading}:** ${items.join(", ")}\n\n`);
       i++;

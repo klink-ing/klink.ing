@@ -10,8 +10,7 @@ import path from "node:path";
 import puppeteer from "puppeteer";
 import { spawn } from "node:child_process";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(__dirname, "..");
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outPath = path.join(repoRoot, "src/assets/resume.pdf");
 
 async function startDevServer(): Promise<{ url: string; stop: () => Promise<void> }> {
