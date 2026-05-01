@@ -21,13 +21,26 @@ const isActive = (href: string) =>
     aria-controls="nav-menu"
     aria-label="Toggle menu"
   >
-    <svg class={styles.hamburgerIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-      <line x1="3" y1="6" x2="21" y2="6" />
-      <line x1="3" y1="12" x2="21" y2="12" />
-      <line x1="3" y1="18" x2="21" y2="18" />
+    <svg
+      class={styles.hamburgerIcon}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      aria-hidden="true"
+    >
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
     </svg>
   </button>
-  <ul id="nav-menu" class={styles.navLinks} data-hamburger-menu data-open="false">
+  <ul
+    id="nav-menu"
+    class={styles.navLinks}
+    data-hamburger-menu
+    data-open="false"
+  >
     {
       navLinks.map((link) => (
         <li>
