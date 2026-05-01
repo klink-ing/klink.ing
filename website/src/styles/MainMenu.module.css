@@ -3,6 +3,7 @@
   @media (width >= 600px) {
     --menu-gap: 20px;
   }
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: var(--menu-gap);
@@ -75,14 +76,25 @@
 
     &[data-open="true"] {
       display: flex;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      padding: var(--menu-gap) calc(var(--v-space) * 0.5);
+      background: var(--color-bg);
+      z-index: 10;
+      align-items: flex-end;
+      text-align: right;
     }
 
     @media (width >= 600px) {
       display: flex;
+      position: static;
       width: auto;
       flex: 1;
       flex-direction: row;
       align-items: baseline;
+      padding: 0;
     }
 
     & a,
