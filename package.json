@@ -1,34 +1,11 @@
 {
-  "name": "klinking",
-  "version": "0.2.0",
   "private": true,
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "check": "vp check && vp exec prettier --check --plugin=prettier-plugin-astro \"**/*.astro\"",
-    "fix": "vp check --fix && vp exec prettier --write --plugin=prettier-plugin-astro \"**/*.astro\"",
-    "resume:pdf": "tsx scripts/generate-resume-pdf.ts",
-    "prepare": "vp config"
-  },
-  "dependencies": {
-    "@astrojs/markdoc": "^1.0.4",
-    "@markdoc/markdoc": "^0.5.7",
-    "astro": "^6.1.9"
-  },
-  "devDependencies": {
-    "@types/js-yaml": "^4.0.9",
-    "@types/node": "^25.0.6",
-    "js-yaml": "^4.1.1",
-    "prettier": "^3.8.3",
-    "prettier-plugin-astro": "^0.14.1",
-    "puppeteer": "^24.42.0",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "vite-plus": "catalog:"
-  },
+  "packageManager": "pnpm@10.33.2",
   "engines": {
     "pnpm": ">=10.20.0"
   },
-  "packageManager": "pnpm@10.33.2"
+  "scripts": {
+    "sandcastle": "npx tsx .sandcastle/main.mts",
+    "plan": "npx tsx .sandcastle/plan.mts"
+  }
 }

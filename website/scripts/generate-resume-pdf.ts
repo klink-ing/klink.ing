@@ -10,8 +10,7 @@ import path from "node:path";
 import puppeteer from "puppeteer";
 import { spawn } from "node:child_process";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(__dirname, "..");
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const outPath = path.join(repoRoot, "src/assets/resume.pdf");
 
 async function startDevServer(): Promise<{ url: string; stop: () => Promise<void> }> {
@@ -34,7 +33,7 @@ async function startDevServer(): Promise<{ url: string; stop: () => Promise<void
       // Strip ANSI escape sequences before matching.
       // eslint-disable-next-line no-control-regex
       const stripped = buf.replace(/\u001b\[[0-9;]*m/g, "");
-      const match = stripped.match(/Local[:\s]+\s*(https?:\/\/\S+)/);
+      const match = /Local[:\s]+\s*(https?:\/\/\S+)/.exec(stripped);
       if (match) {
         clearTimeout(timer);
         resolve(match[1].replace(/\/+$/, ""));

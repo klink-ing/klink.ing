@@ -1,6 +1,6 @@
 // src/lib/resume/text-components.ts
+import type { RenderableTreeNode, Tag } from "@markdoc/markdoc";
 import { type TextComponent, isTag, wrapItems, wrapWithPrefix } from "./render-text";
-import type { RenderableTreeNode } from "@markdoc/markdoc";
 
 const LINE_LENGTH = 80;
 
@@ -31,8 +31,7 @@ export const Stint: TextComponent<{
 const isNamed = (node: RenderableTreeNode, name: string) => isTag(node) && node.name === name;
 
 const isH4 = (node: RenderableTreeNode) =>
-  isNamed(node, "h4") ||
-  (isNamed(node, "Heading") && (node as { attributes: { level?: number } }).attributes.level === 4);
+  isNamed(node, "h4") || (isNamed(node, "Heading") && isTag(node) && node.attributes.level === 4);
 
 export const SkillsSection: TextComponent = (_attrs, children, render) => {
   const out: string[] = [];
@@ -42,8 +41,8 @@ export const SkillsSection: TextComponent = (_attrs, children, render) => {
     if (isH4(child) && next && isNamed(next, "List") && isTag(next)) {
       const heading = render([child]).replace(/\n+$/, "");
       const items = next.children
-        .filter((c) => isNamed(c, "li") && isTag(c))
-        .map((li) => render((li as { children: RenderableTreeNode[] }).children).trim());
+        .filter((c): c is Tag => isNamed(c, "li") && isTag(c))
+        .map((li) => render(li.children).trim());
       out.push(`${wrapItems(heading, items, "  ", LINE_LENGTH)}\n`);
       i++;
     } else {
@@ -53,21 +52,16 @@ export const SkillsSection: TextComponent = (_attrs, children, render) => {
   return out.join("");
 };
 
-export const List: TextComponent<{ listType?: "bullet" | "compact" }> = (attrs, children, render) =>
+export const List: TextComponent = (attrs, children, render) =>
   attrs.listType === "compact" ? `${render(children)}\n\n` : render(children);
 
-export const li: TextComponent<{
-  listType?: "bullet" | "compact";
-  ordered?: boolean;
-  index?: number;
-  last?: boolean;
-}> = (attrs, children, render) => {
+export const li: TextComponent = (attrs, children, render) => {
   const text = render(children).trim().replace(/\s+/g, " ");
   if (attrs.listType === "compact") {
     return attrs.last ? text : `${text}, `;
   }
   if (attrs.ordered) {
-    const prefix = `${attrs.index}. `;
+    const prefix = `${String(attrs.index)}. `;
     return wrapWithPrefix(text, prefix, " ".repeat(prefix.length), LINE_LENGTH);
   }
   return wrapWithPrefix(text, "- ", "  ", LINE_LENGTH);

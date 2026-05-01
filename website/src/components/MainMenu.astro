@@ -1,0 +1,71 @@
+---
+import Logo from "@/components/Logo.astro";
+import styles from "@/styles/MainMenu.module.css";
+
+const navLinks = [
+  { href: "/resume", label: "Resumé" },
+  { href: "/projects", label: "Projects" },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) =>
+  currentPath === href || currentPath.startsWith(`${href}/`);
+---
+
+<nav class={styles.menu}>
+  <a class={styles.logo} href="/"><Logo /></a>
+  <button
+    class={styles.hamburger}
+    data-hamburger-toggle
+    aria-expanded="false"
+    aria-controls="nav-menu"
+    aria-label="Toggle menu"
+  >
+    <svg
+      class={styles.hamburgerIcon}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      aria-hidden="true"
+    >
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+  <ul
+    id="nav-menu"
+    class={styles.navLinks}
+    data-hamburger-menu
+    data-open="false"
+  >
+    {
+      navLinks.map((link) => (
+        <li>
+          {isActive(link.href) ? (
+            <span class={styles.active} aria-current="page">
+              {link.label}
+            </span>
+          ) : (
+            <a href={link.href}>{link.label}</a>
+          )}
+        </li>
+      ))
+    }
+    <li class={styles.menuItems}>
+      <slot />
+    </li>
+  </ul>
+</nav>
+
+<script>
+  import { initHamburgerMenu } from "@/lib/hamburger-menu";
+
+  document.querySelectorAll("nav").forEach((nav) => {
+    if (nav.querySelector("[data-hamburger-toggle]")) {
+      initHamburgerMenu(nav);
+    }
+  });
+</script>
