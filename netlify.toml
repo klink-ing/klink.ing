@@ -1,7 +1,6 @@
 [build]
-base = "website"
-command = "pnpm build"
-publish = "dist"
+command = "cd website && pnpm build"
+publish = "website/dist"
 
 # Resume download headers (Content-Type + Content-Disposition) are emitted to
 # dist/_headers by the resumeHeaders Astro integration in astro.config.mjs.
