@@ -4,8 +4,10 @@
     --menu-gap: 20px;
   }
   display: flex;
+  flex-wrap: wrap;
   gap: var(--menu-gap);
   justify-content: space-between;
+  align-items: baseline;
   width: 100%;
   max-width: var(--max-width);
   margin-left: auto;
@@ -34,14 +36,54 @@
     }
   }
 
+  .hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    color: var(--color-text);
+    z-index: 1;
+    align-self: center;
+
+    @media (width >= 600px) {
+      display: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-link);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
+
+  .hamburgerIcon {
+    width: 24px;
+    height: 24px;
+  }
+
   .navLinks {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex: 1;
+    display: none;
+    width: 100%;
+    flex-direction: column;
     gap: var(--menu-gap);
-    align-items: baseline;
+
+    &[data-open="true"] {
+      display: flex;
+    }
+
+    @media (width >= 600px) {
+      display: flex;
+      width: auto;
+      flex: 1;
+      flex-direction: row;
+      align-items: baseline;
+    }
 
     & a,
     a:any-link {
@@ -66,6 +108,10 @@
     gap: 1em;
     align-items: baseline;
     justify-content: flex-end;
+
+    &:empty {
+      display: none;
+    }
 
     & a,
     a:any-link {
