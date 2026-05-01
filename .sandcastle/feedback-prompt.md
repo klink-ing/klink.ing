@@ -47,10 +47,12 @@ each item:
 - Push the commit to the same branch (the PR auto-updates).
 - Confirm with the user.
 
-The dev server is running on the host at {{DEV_URL}} so the user can preview
-changes live. You can run read-only inspections (`git`, `grep`, `gh pr view`,
-`gh pr view --comments`) but **do not** run `vp dev`, `vp test`, or `vp
-build` — `node_modules` in this worktree was bind-copied from a Linux
-container build and the host runs the dev server.
+The dev server is running inside this sandbox and forwarded to the user's
+host at {{DEV_URL}} so they can preview changes live. `node_modules` in this
+worktree has Linux-native bindings, so you **can** run `vp test`, `vp build`,
+`vp check`, etc. directly to validate your changes before pushing — please
+do, especially after non-trivial fixes. The dev server is already running;
+don't start a second one (`tail .sandcastle/logs/dev-server.log` if you
+need to inspect it).
 
 When the user says they're done, exit (Ctrl-D).

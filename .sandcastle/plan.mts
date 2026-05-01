@@ -28,13 +28,13 @@
 
 import * as sandcastle from "@ai-hero/sandcastle";
 
-import { createWriteStream, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { podman } from "@ai-hero/sandcastle/sandboxes/podman";
+import { podmanWithPublish } from "./podman-publish.mts";
 import process from "node:process";
-import { spawn } from "node:child_process";
 
 // ---------------------------------------------------------------------------
 // Configuration
@@ -42,10 +42,34 @@ import { spawn } from "node:child_process";
 
 const DEV_PORT = 4321;
 
-// Phase 2 hooks: vp install — Vite+ wraps the project's package manager
-// (pnpm) and understands pnpm catalogs, which `npm install` doesn't.
+// Phase 2 hooks: vp install populates the worktree's node_modules with
+// Linux-native bindings so claude can run vp dev / vp test / vp build
+// directly inside the sandbox.
+const installHook = { command: "vp install" };
+
+// Backgrounded dev-server start: nohup + redirected stdio detaches so the
+// hook returns immediately while Astro keeps running for the container's
+// lifetime. The custom provider's `publish` flag forwards the port to
+// localhost on the host.
+//
+// We use `vp exec astro dev` (runs node_modules/.bin/astro directly)
+// rather than `vp run dev` because the latter forwards a literal `--`
+// to the script, which astro then mis-parses and drops the --host flag.
+// Without --host, astro binds to localhost-only inside the container and
+// the host port forward returns "empty reply".
+const startDevHook = {
+  command:
+    "mkdir -p .sandcastle/logs && nohup vp exec astro dev --host 0.0.0.0 --port 4321 > .sandcastle/logs/dev-server.log 2>&1 < /dev/null &",
+};
+
+// Phase 2 (autonomous): just install. No dev server needed.
 const hooks = {
-  sandbox: { onSandboxReady: [{ command: "vp install" }] },
+  sandbox: { onSandboxReady: [installHook] },
+};
+
+// Phase 1 / Phase 3 (interactive): install + start dev server in container.
+const interactiveHooks = {
+  sandbox: { onSandboxReady: [installHook, startDevHook] },
 };
 
 // Mount the host's Claude Code state into every container so the in-container
@@ -58,7 +82,20 @@ const claudeStateMounts = [
   { hostPath: "~/.claude.json", sandboxPath: "~/.claude.json" },
 ];
 
-const sandboxProvider = () => podman({ mounts: claudeStateMounts });
+// Phase 1 / Phase 3 use a custom podman provider that publishes the dev-
+// server port to the host so the user's browser can hit
+// http://localhost:<DEV_PORT> while the dev server runs inside the sandbox.
+const interactiveSandboxProvider = () =>
+  podmanWithPublish({
+    mounts: claudeStateMounts,
+    publish: [`${DEV_PORT}:${DEV_PORT}`],
+  });
+
+// Phase 2 (parallel autonomous implementer/reviewer) doesn't need a dev
+// server, and multiple sandboxes can't all publish the same host port.
+// Use sandcastle's stock podman provider — claude state is still mounted
+// so commits aren't blocked by trust prompts even in --print mode.
+const autonomousSandboxProvider = () => podman({ mounts: claudeStateMounts });
 
 // Sandcastle bind-mounts the worktree to /home/agent/workspace inside the
 // container — but the host has never opened that path in claude, so the
@@ -89,10 +126,6 @@ const ensureSandboxWorkspaceTrusted = () => {
   writeFileSync(claudeJsonPath, JSON.stringify(content, undefined, 2));
 };
 
-// Copy node_modules from the host into the worktree before sandbox start
-// so the in-container `vp install` only has to do a fast delta install.
-const copyToWorktree = ["node_modules"];
-
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -104,41 +137,6 @@ const ts = () => {
     `${d.getFullYear()}${pad2(d.getMonth() + 1)}${pad2(d.getDate())}` +
     `-${pad2(d.getHours())}${pad2(d.getMinutes())}${pad2(d.getSeconds())}`
   );
-};
-
-interface DevServer {
-  stop: () => void;
-}
-
-// Spawn `vp run dev` on the HOST in the given worktree directory. Hot-reload
-// picks up edits Claude makes in the bind-mounted worktree from the sandbox.
-// Skipping a sandbox-side dev server avoids needing docker port-publishing
-// (the docker provider does not expose a `--publish` option).
-const startDevServer = (worktreePath: string): DevServer => {
-  const logsDir = join(worktreePath, ".sandcastle", "logs");
-  mkdirSync(logsDir, { recursive: true });
-  const log = createWriteStream(join(logsDir, "dev-server.log"), { flags: "a" });
-
-  const proc = spawn("vp", ["run", "dev", "--", "--port", String(DEV_PORT)], {
-    cwd: worktreePath,
-    stdio: ["ignore", "pipe", "pipe"],
-    detached: false,
-  });
-  proc.stdout.pipe(log);
-  proc.stderr.pipe(log);
-
-  console.log(`Dev server starting at http://localhost:${DEV_PORT}`);
-  console.log(`  tail -f ${join(logsDir, "dev-server.log")}`);
-
-  return {
-    stop: () => {
-      try {
-        proc.kill("SIGTERM");
-      } catch {
-        /* best-effort */
-      }
-    },
-  };
 };
 
 interface Plan {
@@ -158,25 +156,20 @@ console.log(`Planning branch: ${planBranch}`);
 
 const planSandbox = await sandcastle.createSandbox({
   branch: planBranch,
-  sandbox: sandboxProvider(),
-  // No install hook here — the host runs `vp dev` against the bind-mounted
-  // worktree, so the worktree's node_modules must stay macOS-compatible.
-  // (The host's mounted ~/.claude state means no warmup is needed either.)
-  copyToWorktree,
+  sandbox: interactiveSandboxProvider(),
+  // vp install runs Linux-native bindings into node_modules so claude can
+  // run vp dev / vp test / vp build directly inside the sandbox.
+  hooks: interactiveHooks,
 });
 
-const planDev = startDevServer(planSandbox.worktreePath);
+console.log(`Dev server starting in sandbox at http://localhost:${DEV_PORT}`);
 
-try {
-  await planSandbox.interactive({
-    agent: sandcastle.claudeCode("claude-opus-4-6"),
-    promptFile: "./.sandcastle/plan-prompt-interactive.md",
-    name: "planner",
-    promptArgs: { DEV_URL: `http://localhost:${DEV_PORT}` },
-  });
-} finally {
-  planDev.stop();
-}
+await planSandbox.interactive({
+  agent: sandcastle.claudeCode("claude-opus-4-6"),
+  promptFile: "./.sandcastle/plan-prompt-interactive.md",
+  name: "planner",
+  promptArgs: { DEV_URL: `http://localhost:${DEV_PORT}` },
+});
 
 // Read the plan that Claude wrote before exiting.
 const planJsonPath = join(planSandbox.worktreePath, ".sandcastle", "plan.json");
@@ -222,9 +215,8 @@ const settled = await Promise.allSettled(
   plan.issues.map(async (issue) => {
     const sandbox = await sandcastle.createSandbox({
       branch: issue.branch,
-      sandbox: sandboxProvider(),
+      sandbox: autonomousSandboxProvider(),
       hooks,
-      copyToWorktree,
     });
 
     try {
@@ -313,30 +305,24 @@ const integrationBranch = `sandcastle/feature-${plan.featureSlug}-${ts()}`;
 const prSandbox = await sandcastle.createSandbox({
   branch: integrationBranch,
   baseBranch: "main",
-  sandbox: sandboxProvider(),
-  // No install hook — the host runs `vp dev` against the bind-mounted
-  // worktree, so the worktree's node_modules must stay macOS-compatible.
-  copyToWorktree,
+  sandbox: interactiveSandboxProvider(),
+  hooks: interactiveHooks,
 });
 
-const prDev = startDevServer(prSandbox.worktreePath);
+console.log(`Dev server starting in sandbox at http://localhost:${DEV_PORT}`);
 
-try {
-  await prSandbox.interactive({
-    agent: sandcastle.claudeCode("claude-opus-4-6"),
-    promptFile: "./.sandcastle/feedback-prompt.md",
-    name: "pr-feedback",
-    promptArgs: {
-      BRANCHES: completedBranches.map((b) => `- ${b}`).join("\n"),
-      FEATURE_SLUG: plan.featureSlug,
-      INTEGRATION_BRANCH: integrationBranch,
-      DEV_URL: `http://localhost:${DEV_PORT}`,
-      SPEC_CONTENT: specContent,
-    },
-  });
-} finally {
-  prDev.stop();
-}
+await prSandbox.interactive({
+  agent: sandcastle.claudeCode("claude-opus-4-6"),
+  promptFile: "./.sandcastle/feedback-prompt.md",
+  name: "pr-feedback",
+  promptArgs: {
+    BRANCHES: completedBranches.map((b) => `- ${b}`).join("\n"),
+    FEATURE_SLUG: plan.featureSlug,
+    INTEGRATION_BRANCH: integrationBranch,
+    DEV_URL: `http://localhost:${DEV_PORT}`,
+    SPEC_CONTENT: specContent,
+  },
+});
 
 await prSandbox.close();
 

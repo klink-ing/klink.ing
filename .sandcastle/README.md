@@ -3,7 +3,7 @@
 Two entrypoints:
 
 - `vp run sandcastle` — autonomous: reads open `Sandcastle`-labeled GitHub issues, plans + implements + reviews + merges them in parallel. See [main.mts](./main.mts).
-- `vp run plan` — interactive: opens a Claude TUI where you collaborate on a feature with `vp dev` running on the host (preview at `localhost:4321`), then hands off to autonomous implementer/reviewer agents per sub-task, then opens a PR and stays interactive for review feedback. See [plan.mts](./plan.mts).
+- `vp run plan` — interactive: opens a Claude TUI where you collaborate on a feature with `vp dev` running **inside the sandbox** and forwarded to your host browser at `localhost:4321`. Claude can run `vp test`, `vp build`, etc. directly. After the session it hands off to autonomous implementer/reviewer agents per sub-task, then opens a PR and stays interactive for review feedback. See [plan.mts](./plan.mts).
 
 ## One-time setup
 

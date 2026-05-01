@@ -1,20 +1,21 @@
 # Interactive feature planning
 
 You are pairing with the user to plan a new feature for this project. The
-dev server is already running on the **host machine** at {{DEV_URL}} — the
-user has it open in their browser. You are inside a sandbox; any code edits
-you make are bind-mounted back to that worktree, so the dev server hot-reloads
-as you go.
+dev server is running **inside this sandbox** and the port is forwarded to
+the user's host browser at {{DEV_URL}} — they have it open. The dev server
+hot-reloads as you edit files in `/home/agent/workspace`.
 
-## Constraints inside this sandbox
+## Tools available
 
-- **You can edit code freely.** The user sees changes live at {{DEV_URL}}.
-- **You cannot run `vp dev`, `vp test`, `vp build` yourself** — the project's
-  `node_modules` in this worktree contains macOS native bindings copied from
-  the host, not Linux ones. Trying to run them will fail with native-binding
-  errors. The user runs the dev server on their host.
-- You **can** run read-only inspection: `git`, `grep`, file reads, `gh issue
-list`, etc.
+- **Edit code freely.** The user sees changes live at {{DEV_URL}}.
+- **Run `vp` commands.** This sandbox has Linux-native `node_modules`
+  installed, so `vp test`, `vp build`, `vp check`, `vp lint` all work.
+  Use them to validate spikes before declaring them ready.
+- `git`, `gh`, `grep`, file reads — all available.
+
+The dev server is already running in the background; do not start a second
+one. If you need to inspect its logs:
+`tail .sandcastle/logs/dev-server.log`.
 
 ## How to work
 
