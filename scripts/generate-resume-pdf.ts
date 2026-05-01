@@ -34,7 +34,7 @@ async function startDevServer(): Promise<{ url: string; stop: () => Promise<void
       // Strip ANSI escape sequences before matching.
       // eslint-disable-next-line no-control-regex
       const stripped = buf.replace(/\u001b\[[0-9;]*m/g, "");
-      const match = stripped.match(/Local[:\s]+\s*(https?:\/\/\S+)/);
+      const match = /Local[:\s]+\s*(https?:\/\/\S+)/.exec(stripped);
       if (match) {
         clearTimeout(timer);
         resolve(match[1].replace(/\/+$/, ""));

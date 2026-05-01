@@ -9,7 +9,8 @@ export type TextComponent<Attrs = Record<string, unknown>> = (
   render: TextRender,
 ) => string;
 
-export type TextComponents = Record<string, TextComponent>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type TextComponents = Record<string, TextComponent<any>>;
 
 export const isTag = (node: RenderableTreeNode): node is Tag =>
   typeof node === "object" && node !== null && "name" in node && "attributes" in node;
@@ -42,17 +43,17 @@ function decorateLis(node: RenderableTreeNode): RenderableTreeNode {
             index,
             last: index === total,
           },
-          c.children.map(decorateLis) as RenderableTreeNode[],
+          c.children.map(decorateLis),
         );
       }
       return decorateLis(c);
     });
-    return new Markdoc.Tag(node.name, node.attributes, newChildren as RenderableTreeNode[]);
+    return new Markdoc.Tag(node.name, node.attributes, newChildren);
   }
   return new Markdoc.Tag(
     node.name,
     node.attributes,
-    node.children.map(decorateLis) as RenderableTreeNode[],
+    node.children.map(decorateLis),
   );
 }
 
@@ -62,8 +63,8 @@ const joinCollapsed = (parts: string[]): string => {
     if (!result) {
       result = next;
     } else {
-      const trailing = result.match(/\n*$/)![0].length;
-      const leading = next.match(/^\n*/)![0].length;
+      const trailing = /\n*$/.exec(result)![0].length;
+      const leading = /^\n*/.exec(next)![0].length;
       const merged = "\n".repeat(Math.max(trailing, leading));
       result = result.slice(0, result.length - trailing) + merged + next.slice(leading);
     }
@@ -88,7 +89,7 @@ export function renderText(tree: RenderableTreeNode, opts: { components: TextCom
       return component(node.attributes, node.children, render);
     }
     // Native HTML tag passthrough — emit children only, drop wrapper.
-    return render(node.children as RenderableTreeNode[]);
+    return render(node.children);
   };
   return render(decorated);
 }

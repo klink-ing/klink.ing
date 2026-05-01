@@ -33,7 +33,7 @@ const isNamed = (node: RenderableTreeNode, name: string) => isTag(node) && node.
 
 const isH4 = (node: RenderableTreeNode) =>
   isNamed(node, "h4") ||
-  (isNamed(node, "Heading") && (node as { attributes: { level?: number } }).attributes.level === 4);
+  (isNamed(node, "Heading") && isTag(node) && node.attributes.level === 4);
 
 export const SkillsSection: TextComponent = (_attrs, children, render) => {
   const out: string[] = [];
@@ -45,8 +45,8 @@ export const SkillsSection: TextComponent = (_attrs, children, render) => {
         .trim()
         .replace(/^#+\s*/, "");
       const items = next.children
-        .filter((c) => isNamed(c, "li") && isTag(c))
-        .map((li) => render((li as { children: RenderableTreeNode[] }).children).trim());
+        .filter((c): c is import("@markdoc/markdoc").Tag => isNamed(c, "li") && isTag(c))
+        .map((li) => render(li.children).trim());
       out.push(`**${heading}:** ${items.join(", ")}\n\n`);
       i++;
     } else {

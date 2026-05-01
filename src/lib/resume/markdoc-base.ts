@@ -36,7 +36,7 @@ export const baseConfig: Config = {
         addListAttributes(node, { listType: "compact" });
         const attributes = node.transformAttributes(config);
         const children = node.transformChildren(config);
-        const tag = (config.tags?.skillsSection?.render ?? "SkillsSection") as string;
+        const tag = config.tags?.skillsSection?.render ?? "SkillsSection";
         return new Markdoc.Tag(tag, attributes, children);
       },
     },
